@@ -50,8 +50,10 @@ public final class TrackingURL {
 		Random random = new Random();
 		//
 		int cookie = random.nextInt();
-		int randomValue = random.nextInt(2147483647) - 1;
 		long now = new Date().getTime();
+		//
+		random.setSeed(2147483647);
+		int randomValue = random.nextInt() - 1;
 		//
 		return
 			"__utma%3D'"

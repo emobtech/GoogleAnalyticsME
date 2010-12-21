@@ -5,6 +5,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import javax.microedition.io.Connector;
+import javax.microedition.io.HttpConnection;
+
 public final class Tracker {
 	
 	private String trackingCode;
@@ -35,7 +38,7 @@ public final class Tracker {
 	
 	public void addToQueue(Request request) {
 		synchronized (queue) {
-			queue.add(request);			
+			queue.addElement(request);
 		}
 	}
 	
@@ -62,7 +65,7 @@ public final class Tracker {
 				process((Request)queue.elementAt(i));
 				//
 				synchronized (queue) {
-					queue.remove(head);
+					queue.removeElementAt(head);
 				}
 			} catch (IOException e) {
 				head++;
@@ -72,8 +75,23 @@ public final class Tracker {
 	
 	synchronized void process(Request request) throws IOException {
 		String url = request.url(trackingCode);
+		String userAgent = "Google Analytics ME/1.0 (compatible; Profile/MIDP-2.0 Configuration/CLDC-1.0)";
+		HttpConnection conn = null;
 		//
-		System.out.println("Processing: " + url);
+		try {
+			conn = (HttpConnection)Connector.open(url);
+			conn.setRequestProperty("User-Agent", userAgent);
+			//
+			if (conn.getResponseCode() != HttpConnection.HTTP_OK) {
+				throw new IOException();
+			}
+		} catch (IOException e) {
+			throw e;
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
 	}
 	
 	private class Dispatcher extends TimerTask {
@@ -85,7 +103,7 @@ public final class Tracker {
 		private boolean isRunning;
 
 		public Dispatcher(long period) {
-			this.period = period;
+			this.period = period * 1000;
 			timer = new Timer();
 			//
 			if (period > 0) {
@@ -102,10 +120,10 @@ public final class Tracker {
 					if (delayNext > delay) {
 						cancel();
 						//
-						timer.schedule(this, delay, period);
+						timer.schedule(this, delay * 1000, period);
 					}
 				} else {
-					timer.schedule(this, delay);
+					timer.schedule(this, delay * 1000);
 				}
 			}
 		}

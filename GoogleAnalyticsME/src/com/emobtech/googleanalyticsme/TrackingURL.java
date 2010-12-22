@@ -24,8 +24,8 @@ public final class TrackingURL {
 		//
 		parameters.put("utmwv", "1");
 		parameters.put("utmn", new Random().nextInt() + "");
-		parameters.put("utmcs", System.getProperty("microedition.encoding"));
-		parameters.put("utmul", System.getProperty("microedition.locale"));
+		parameters.put("utmcs", getProperty("microedition.encoding", "UTF-8"));
+		parameters.put("utmul", getProperty("microedition.locale", "en-US"));
 		parameters.put("utmje", "1");
 		parameters.put("utmcr", "1");
 		parameters.put("utmhn", "localhost");
@@ -94,5 +94,9 @@ public final class TrackingURL {
 		}
 		//
 		return queryStr.toString();
+	}
+	
+	private String getProperty(String key, String defaultValue) {
+		return (key = System.getProperty(key)) != null ? key : defaultValue;
 	}
 }

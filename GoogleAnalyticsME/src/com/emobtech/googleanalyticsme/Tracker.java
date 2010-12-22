@@ -1,31 +1,68 @@
 package com.emobtech.googleanalyticsme;
 
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+
+import com.emobtech.googleanalyticsme.util.StringUtil;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
 public final class Tracker {
 	
+	private static Hashtable trackerPool;
+	
 	private String trackingCode;
 	
 	private Vector queue;
 	
-	private Dispatcher dispatcher;
+	private Timer timer;
 	
-	public static Tracker getInstance(String trackingCode, long flushInterval) {
-		return new Tracker(trackingCode, flushInterval);
+	private Task task;
+	
+	private long flushInterval;
+	
+	public synchronized static Tracker getInstance(String trackingCode) {
+		return getInstance(trackingCode, 0);
+	}
+	
+	public synchronized static Tracker getInstance(String trackingCode,
+		long flushInterval) {
+		if (StringUtil.isEmpty(trackingCode)) {
+			throw new IllegalArgumentException(
+				"Tracking code must not be empty.");
+		}
+		//
+		if (trackerPool == null) {
+			trackerPool = new Hashtable();
+		}
+		//
+		Tracker tracker = (Tracker)trackerPool.get(trackingCode);
+		//
+		if (tracker == null) {
+			tracker = new Tracker(trackingCode, flushInterval);
+			trackerPool.put(trackingCode, tracker);
+		}
+		//
+		return tracker;
 	}
 	
 	private Tracker(String trackingCode, long flushInterval) {
-		this.trackingCode = trackingCode;
-		queue = new Vector(5);
-		dispatcher = new Dispatcher(flushInterval);
+		flushInterval *= 1000; //secs to millis.
 		//
-		dispatcher.start(flushInterval);
+		this.trackingCode = trackingCode;
+		this.flushInterval = flushInterval;
+		//
+		queue = new Vector(5);
+		timer = new Timer();
+		task = new Task();
+		//
+		if (flushInterval > 0) {
+			timer.schedule(task, flushInterval, flushInterval);
+		}
 	}
 	
 	public void track(Request request) {
@@ -49,7 +86,7 @@ public final class Tracker {
 	public void flush(boolean asynchronously) {
 		if (queue.size() > 0) {
 			if (asynchronously) {
-				dispatcher.start(1000);
+				runTask(1000);
 			} else {
 				processQueue();
 			}
@@ -60,9 +97,9 @@ public final class Tracker {
 		int size = queue.size();
 		int head = 0;
 		//
-		for (int i = 0; i < size; i++) {
+		while (size-- > 0) {
 			try {
-				process((Request)queue.elementAt(i));
+				process((Request)queue.elementAt(head));
 				//
 				synchronized (queue) {
 					queue.removeElementAt(head);
@@ -94,44 +131,39 @@ public final class Tracker {
 		}
 	}
 	
-	private class Dispatcher extends TimerTask {
-		
-		private Timer timer;
-		
-		private long period;
-		
-		private boolean isRunning;
-
-		public Dispatcher(long period) {
-			this.period = period * 1000;
-			timer = new Timer();
-			//
-			if (period > 0) {
-				timer.schedule(this, period, period);
-			}
-		}
-		
-		public void start(long delay) {
-			if (!isRunning) {
-				if (period > 0) {
-					long delayNext =
-						scheduledExecutionTime() - System.currentTimeMillis();
+	void runTask(long delay) {
+		if (!task.isRunning) {
+			if (flushInterval > 0) {
+				long delayNextRun =
+					task.endExecutionTime +
+					flushInterval -
+					System.currentTimeMillis();
+				//
+				if (delayNextRun > delay) {
+					task.cancel();
+					task = new Task();
 					//
-					if (delayNext > delay) {
-						cancel();
-						//
-						timer.schedule(this, delay * 1000, period);
-					}
-				} else {
-					timer.schedule(this, delay * 1000);
+					timer.schedule(task, delay, flushInterval);
 				}
+			} else {
+				timer.schedule(task, delay);
 			}
 		}
+	}
+
+	private class Task extends TimerTask {
+		
+		public long endExecutionTime = System.currentTimeMillis();
+		
+		public boolean isRunning;
 		
 		public void run() {
 			isRunning = true;
+			//
 			processQueue();
+			//
 			isRunning = false;
+			endExecutionTime = System.currentTimeMillis();
 		}
 	}
 }

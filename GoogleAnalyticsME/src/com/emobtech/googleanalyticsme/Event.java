@@ -70,7 +70,7 @@ public final class Event implements Request {
 		event.append(action);
 		if (!StringUtil.isEmpty(label)) {
 			event.append('*');
-			event.append(action);
+			event.append(label);
 		}
 		event.append(')');
 		if (value != null) {

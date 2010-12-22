@@ -1,3 +1,10 @@
+/*
+ * TrackingURL.java
+ * 21/12/2010
+ * Google Analytics ME
+ * Copyright(c) Ernandes Mourao Junior (ernandes@gmail.com)
+ * All rights reserved
+ */
 package com.emobtech.googleanalyticsme;
 
 import java.util.Date;
@@ -8,12 +15,36 @@ import java.util.Random;
 import com.emobtech.googleanalyticsme.util.StringUtil;
 import com.emobtech.googleanalyticsme.util.URLEncoder;
 
+/**
+ * <p>
+ * This class represents a tracking URL, which is used for the communication
+ * with Google Analytics, in order to track the application's events.
+ * </p>
+ * 
+ * @author Ernandes Mourao Junior (ernandes@gmail.com)
+ * @since 1.0
+ */
 public final class TrackingURL {
-	
+	/**
+	 * <p>
+	 * Google Analytics URL preffix.
+	 * </p> 
+	 */
 	private String urlPreffix = "http://www.google-analytics.com/__utm.gif";
 	
+	/**
+	 * <p>
+	 * Parameters.
+	 * </p>
+	 */
 	private Hashtable parameters;
 	
+	/**
+	 * <p>
+	 * Creates an instance of TrackingURL class. 
+	 * </p>
+	 * @param trackingCode Tracking code.
+	 */
 	public TrackingURL(String trackingCode) {
 		if (StringUtil.isEmpty(trackingCode)) {
 			throw new IllegalArgumentException(
@@ -34,18 +65,44 @@ public final class TrackingURL {
 		parameters.put("utmcc", getCookie());
 	}
 	
+	/**
+	 * <p>
+	 * Adds a parameter to the URL.
+	 * </p>
+	 * @param key Parameter key.
+	 * @param value Parameter value.
+	 * @throws NullPointerException If key or value is null;
+	 */
 	public void addParameter(String key, String value) {
 		parameters.put(key, value);
 	}
 	
+	/**
+	 * <p>
+	 * Removes a given parameter from the URL.
+	 * </p>
+	 * @param key Parameter key.
+	 */
 	public void removeParameter(String key) {
 		parameters.remove(key);
 	}
 	
+	/**
+	 * <p>
+	 * Returns the URL as a string.
+	 * </p>
+	 * @return String.
+	 */
 	public String toString() {
 		return urlPreffix + '?' + queryString();
 	}
 	
+	/**
+	 * <p>
+	 * Returns the value for the parameter "utmcc".
+	 * </p>
+	 * @return Cookie.
+	 */
 	private String getCookie() {
 		Random random = new Random();
 		//
@@ -81,6 +138,12 @@ public final class TrackingURL {
 			+ cookie;
 	}
 
+	/**
+	 * <p>
+	 * Returns all parameters as a query string.
+	 * </p>
+	 * @return Query string.
+	 */
 	private String queryString() {
 		StringBuffer queryStr = new StringBuffer();
 		Enumeration mdKeys = parameters.keys();
@@ -96,6 +159,14 @@ public final class TrackingURL {
 		return queryStr.toString();
 	}
 	
+	/**
+	 * <p>
+	 * Returns the value of a given property.
+	 * </p>
+	 * @param key Property key.
+	 * @param defaultValue Default value in case property´s value is null.
+	 * @return Value.
+	 */
 	private String getProperty(String key, String defaultValue) {
 		return (key = System.getProperty(key)) != null ? key : defaultValue;
 	}

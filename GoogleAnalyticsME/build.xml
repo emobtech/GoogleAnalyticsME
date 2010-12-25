@@ -143,7 +143,9 @@
 
 		<zip destfile="${basedir}/${game.package}-javame.zip">
 			<zipfileset dir="${game.path.src}" prefix="${game.package}/src" includes="**/*.*"/>
+			<!--
 			<zipfileset dir="${game.path.lib}" prefix="${game.package}/lib" includes="**/*.*" excludes="**/mobile-ju-framework-1.0.jar"/>
+			-->
 			<zipfileset dir="${game.javame.path.dist}" prefix="${game.package}/dist" includes="**/*.*"/>
 		    <zipfileset dir="${game.path.javadoc}" prefix="${game.package}/doc/javadoc" includes="**/*.*"/>
 			<zipfileset dir="${basedir}" prefix="${game.package}" includes="LICENSE.txt"/>

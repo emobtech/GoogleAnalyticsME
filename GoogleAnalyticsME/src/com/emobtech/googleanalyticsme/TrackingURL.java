@@ -7,10 +7,8 @@
  */
 package com.emobtech.googleanalyticsme;
 
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Random;
+import java.util.Vector;
 
 import com.emobtech.googleanalyticsme.util.StringUtil;
 import com.emobtech.googleanalyticsme.util.URLEncoder;
@@ -27,17 +25,28 @@ import com.emobtech.googleanalyticsme.util.URLEncoder;
 public final class TrackingURL {
 	/**
 	 * <p>
+	 * Random number generator.
+	 * </p>
+	 */
+	private static final Random random = new Random(2147483647);
+
+	/**
+	 * <p>
 	 * Google Analytics URL preffix.
 	 * </p> 
 	 */
-	private String urlPreffix = "http://www.google-analytics.com/__utm.gif";
+	private static final String urlPreffix =
+		"http://www.google-analytics.com/__utm.gif";
+		
+	/**
+	 * 
+	 */
+	private Vector keys = new Vector();
 	
 	/**
-	 * <p>
-	 * Parameters.
-	 * </p>
+	 * 
 	 */
-	private Hashtable parameters;
+	private Vector values = new Vector();
 	
 	/**
 	 * <p>
@@ -51,18 +60,21 @@ public final class TrackingURL {
 				"Tracking code must not be empty.");
 		}
 		//
-		parameters = new Hashtable(15);
+		keys = new Vector(15);
+		values = new Vector(15);
 		//
-		parameters.put("utmwv", "1");
-		parameters.put("utmn", new Random().nextInt() + "");
-		parameters.put("utmcs", getProperty("microedition.encoding", "UTF-8"));
-		parameters.put("utmul", getProperty("microedition.locale", "en-US"));
-		parameters.put("utmje", "1");
-		parameters.put("utmcr", "1");
-		parameters.put("utmhn", "localhost");
-		parameters.put("utmr", "http://kenai.com/projects/googleanalyticsme");
-		parameters.put("utmac", trackingCode);
-		parameters.put("utmcc", getCookie());
+		addParameter("utmwv", "1");
+		addParameter("utmn", Math.abs(random.nextInt()) + "");
+		addParameter("utmcs", getProperty("microedition.encoding", "UTF-8"));
+		addParameter("utmul", getProperty("microedition.locale", "en-us"));
+		addParameter("utmdt", "");
+		addParameter("utmhn", URLEncoder.encode("kenai.com"));
+		addParameter("utmr", URLEncoder.encode("http://kenai.com"));
+		addParameter("utmt", "");
+		addParameter("utme", "");
+		addParameter("utmp", "");
+		addParameter("utmac", trackingCode);
+		addParameter("utmcc", "__utma%3D999.999.999.999.999.1%3B");
 	}
 	
 	/**
@@ -74,7 +86,12 @@ public final class TrackingURL {
 	 * @throws NullPointerException If key or value is null;
 	 */
 	public void addParameter(String key, String value) {
-		parameters.put(key, value);
+		if (keys.contains(key)) {
+			values.setElementAt(value, keys.indexOf(key));
+		} else {
+			keys.addElement(key);
+			values.addElement(value);
+		}
 	}
 	
 	/**
@@ -84,7 +101,26 @@ public final class TrackingURL {
 	 * @param key Parameter key.
 	 */
 	public void removeParameter(String key) {
-		parameters.remove(key);
+		if (keys.contains(key)) {
+			int ix = keys.indexOf(key);
+			//
+			values.removeElementAt(ix);
+			keys.removeElementAt(ix);
+		}
+	}
+	
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj) {
+		return toString().equals(obj);
+	}
+	
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
+		return toString().hashCode();
 	}
 	
 	/**
@@ -96,47 +132,6 @@ public final class TrackingURL {
 	public String toString() {
 		return urlPreffix + '?' + queryString();
 	}
-	
-	/**
-	 * <p>
-	 * Returns the value for the parameter "utmcc".
-	 * </p>
-	 * @return Cookie.
-	 */
-	private String getCookie() {
-		Random random = new Random();
-		//
-		int cookie = random.nextInt();
-		long now = new Date().getTime();
-		//
-		random.setSeed(2147483647);
-		int randomValue = random.nextInt() - 1;
-		//
-		return
-			"__utma%3D'"
-			+ cookie
-			+ '.'
-			+ randomValue
-			+ '.'
-			+ now
-			+ '.'
-			+ now
-			+ '.'
-			+ now
-			+ ".2%3B%2B__utmb%3D"
-			+ cookie
-			+ "%3B%2B__utmc%3D"
-			+ cookie
-			+ "%3B%2B__utmz%3D"
-			+ cookie
-			+ '.'
-			+ now
-			+ ".2.2.utmccn%3D"
-			+ "(direct)%7Cutmcsr%3D"
-			+ "(direct)%7Cutmcmd%3D"
-			+ "(none)%3B%2B__utmv%3D"
-			+ cookie;
-	}
 
 	/**
 	 * <p>
@@ -145,18 +140,25 @@ public final class TrackingURL {
 	 * @return Query string.
 	 */
 	private String queryString() {
-		StringBuffer queryStr = new StringBuffer();
-		Enumeration mdKeys = parameters.keys();
+		StringBuffer query = new StringBuffer();
+		int size = keys.size();
+		String value;
 		//
-		while (mdKeys.hasMoreElements()) {
-			String key = mdKeys.nextElement().toString();
+		for (int i = 0; i < size; i++) {
+			value = (String)values.elementAt(i);
 			//
-			queryStr.append('&' + key + '=');
-			queryStr.append(
-				URLEncoder.encode(parameters.get(key).toString(), "UTF-8"));
+			if (!StringUtil.isEmpty(value)) {
+				query.append(keys.elementAt(i));
+				query.append("=");
+				query.append(value);
+				//
+				if (i +1 < size) {
+					query.append("&");
+				}
+			}
 		}
 		//
-		return queryStr.toString();
+		return query.toString();
 	}
 	
 	/**

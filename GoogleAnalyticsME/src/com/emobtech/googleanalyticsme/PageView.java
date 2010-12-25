@@ -8,6 +8,7 @@
 package com.emobtech.googleanalyticsme;
 
 import com.emobtech.googleanalyticsme.util.StringUtil;
+import com.emobtech.googleanalyticsme.util.URLEncoder;
 
 /**
  * <p>
@@ -19,7 +20,7 @@ import com.emobtech.googleanalyticsme.util.StringUtil;
  * @since 1.0
  * @see Tracker
  */
-public final class PageView implements Request {
+public class PageView implements Request {
 	/**
 	 * <p>
 	 * Page's title.
@@ -58,7 +59,7 @@ public final class PageView implements Request {
 		}
 		//
 		this.title = title;
-		this.uri = uri;
+		this.uri = !uri.startsWith("/") ? "/" + uri : uri;
 	}
 
 	/**
@@ -66,10 +67,9 @@ public final class PageView implements Request {
 	 */
 	public String url(String trackingCode) {
 		TrackingURL params = new TrackingURL(trackingCode);
-		params.addParameter("utmt", "page");
-		params.addParameter("utmp", uri);
+		params.addParameter("utmp", URLEncoder.encode(uri));
 		if (!StringUtil.isEmpty(title)) {
-			params.addParameter("utmdt", title);
+			params.addParameter("utmdt", URLEncoder.encode(title));
 		}
 		//
 		return params.toString();

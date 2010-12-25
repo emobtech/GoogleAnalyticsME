@@ -76,16 +76,20 @@ public final class Tracker {
 	 * Creates a Tracker object associated to the given tracking code.
 	 * </p>
 	 * <p>
-	 * A Tracker object instantiated from this method does not flush events 
-	 * automatically. Actually, all queued events must be flushed explicitly by
-	 * calling {@link Tracker#flush(boolean)}.
+	 * A Tracker object will flush automatically all queued events. The 
+	 * automatic flush is a fixed-delay execution process, which delay in this
+	 * case is a default value defined by this class.
+	 * </p>
+	 * <p>
+	 * In addition, explicit calls to {@link Tracker#flush(boolean)} will also
+	 * flush the queued events, without affecting the automatic process.
 	 * </p>
 	 * @param trackingCode App's tracking code.
 	 * @return Tracker object.
 	 * @throws IllegalArgumentException If tracking code is empty.
 	 */
 	public synchronized static Tracker getInstance(String trackingCode) {
-		return getInstance(trackingCode, 0);
+		return getInstance(trackingCode, 90);
 	}
 	
 	/**
@@ -93,13 +97,21 @@ public final class Tracker {
 	 * Creates a Tracker object associated to the given tracking code.
 	 * </p>
 	 * <p>
-	 * A Tracker object instantiated from this method flushes automatically all
-	 * queued events. The automatic flush is a fixed-delay execution process,
-	 * which delay is according to the given flush interval parameter.
+	 * A Tracker object will flush automatically all queued events. The 
+	 * automatic flush is a fixed-delay execution process, which delay in this
+	 * case is defined by the flushInterval parameter.
 	 * </p>
 	 * <p>
-	 * In addition, explicit calls to {@link Tracker#flush(boolean)} will flush
-	 * the events, without affecting the automatic process.
+	 * In addition, explicit calls to {@link Tracker#flush(boolean)} will also
+	 * flush the queued events, without affecting the automatic process.
+	 * </p>
+	 * <p>
+	 * If you wish not to work with the automatic flush process, just pass a 
+	 * value lower than or equal to zero to the flushInterval parameter. In this
+	 * case no background process is started and then you will be responsible 
+	 * for flushing all queued events, by calling 
+	 * {@link Tracker#flush(boolean)}. Otherwise, you may just work with 
+	 * {@link Tracker#track(Request)}, which send the events synchronously.
 	 * </p>
 	 * @param trackingCode App's tracking code.
 	 * @param flushInterval Automatic flush interval (in seconds).
@@ -241,14 +253,15 @@ public final class Tracker {
 	
 	/**
 	 * <p>
-	 * Process a given requests, in order to send the event to Google Analytics.
+	 * Process a given request, in order to send the event to Google Analytics.
 	 * </p>
 	 * @param request Request.
 	 * @throws IOException If any I/O error accours.
 	 */
 	synchronized void process(Request request) throws IOException {
+		final String userAgent = "Google Analytics ME/1.0 (compatible; Profile/MIDP-2.1 Configuration/CLDC-1.1)";
+		//
 		String url = request.url(trackingCode);
-		String userAgent = "Google Analytics ME/1.0 (compatible; Profile/MIDP-2.0 Configuration/CLDC-1.0)";
 		HttpConnection conn = null;
 		//
 		try {

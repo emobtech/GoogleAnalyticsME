@@ -21,8 +21,20 @@ import java.io.UnsupportedEncodingException;
 public final class URLEncoder {
     /**
 	 * <p>
-	 * Encode a given string. If encode type is not informed, UTF-8 is
-	 * considered.
+	 * Encode a given string, according to the encoding type defined by the
+	 * system property microedition.encoding. If encoding type is not present,
+	 * UTF-8 is used.
+	 * </p>
+	 * @param s String to encode.
+	 * @return Encoded string.
+	 * @throws IllegalArgumentException If string is empty or null.
+	 */
+	public static String encode(String s) {
+		return encode(s, System.getProperty("microedition.encoding"));
+	}
+    /**
+	 * <p>
+	 * Encode a given string. If encoding type is not informed, UTF-8 is used.
 	 * </p>
 	 * @param s String to encode.
 	 * @param enc Encode.

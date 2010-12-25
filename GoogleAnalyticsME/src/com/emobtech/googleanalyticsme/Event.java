@@ -8,6 +8,7 @@
 package com.emobtech.googleanalyticsme;
 
 import com.emobtech.googleanalyticsme.util.StringUtil;
+import com.emobtech.googleanalyticsme.util.URLEncoder;
 
 /**
  * <p>
@@ -26,7 +27,7 @@ import com.emobtech.googleanalyticsme.util.StringUtil;
  * @since 1.0
  * @see Tracker
  */
-public final class Event implements Request {
+public class Event implements Request {
 	/**
 	 * <p>
 	 * Event request value.
@@ -88,7 +89,7 @@ public final class Event implements Request {
 	public String url(String trackingCode) {
 		TrackingURL params = new TrackingURL(trackingCode);
 		params.addParameter("utmt", "event");
-		params.addParameter("utme", event);
+		params.addParameter("utme", URLEncoder.encode(event));
 		//
 		return params.toString();
 	}

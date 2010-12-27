@@ -27,7 +27,7 @@ import com.emobtech.googleanalyticsme.util.URLEncoder;
  * @since 1.0
  * @see Tracker
  */
-public class Event implements Request {
+public final class Event implements Request {
 	/**
 	 * <p>
 	 * Event request value.

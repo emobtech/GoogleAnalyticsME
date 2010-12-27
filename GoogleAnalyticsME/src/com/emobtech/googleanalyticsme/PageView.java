@@ -20,7 +20,7 @@ import com.emobtech.googleanalyticsme.util.URLEncoder;
  * @since 1.0
  * @see Tracker
  */
-public class PageView implements Request {
+public final class PageView implements Request {
 	/**
 	 * <p>
 	 * Page's title.

@@ -39,12 +39,16 @@ public final class TrackingURL {
 		"http://www.google-analytics.com/__utm.gif";
 		
 	/**
-	 * 
+	 * <p>
+	 * List of parameters' key.
+	 * </p>
 	 */
 	private Vector keys = new Vector();
 	
 	/**
-	 * 
+	 * <p>
+	 * List of parameters's value.
+	 * </p>
 	 */
 	private Vector values = new Vector();
 	

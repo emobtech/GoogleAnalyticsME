@@ -28,7 +28,14 @@ public final class TrackingURL {
 	 * Random number generator.
 	 * </p>
 	 */
-	private static final Random random = new Random(2147483647);
+	private static final Random random = new Random(System.currentTimeMillis());
+	
+	/**
+	 * <p>
+	 * Cookie.
+	 * </p>
+	 */
+	private static final int cookie = random.nextInt();
 
 	/**
 	 * <p>
@@ -68,7 +75,7 @@ public final class TrackingURL {
 		values = new Vector(15);
 		//
 		addParameter("utmwv", "1");
-		addParameter("utmn", Math.abs(random.nextInt()) + "");
+		addParameter("utmn", random.nextInt() + "");
 		addParameter("utmcs", getProperty("microedition.encoding", "UTF-8"));
 		addParameter("utmul", getProperty("microedition.locale", "en-us"));
 		addParameter("utmdt", "");
@@ -78,7 +85,7 @@ public final class TrackingURL {
 		addParameter("utme", "");
 		addParameter("utmp", "");
 		addParameter("utmac", trackingCode);
-		addParameter("utmcc", "__utma%3D999.999.999.999.999.1%3B");
+		addParameter("utmcc", getCookie());
 	}
 	
 	/**
@@ -175,5 +182,21 @@ public final class TrackingURL {
 	 */
 	private String getProperty(String key, String defaultValue) {
 		return (key = System.getProperty(key)) != null ? key : defaultValue;
+	}
+	
+	/**
+	 * <p>
+	 * Returns cookie.
+	 * </p>
+	 * @return Cookie.
+	 */
+	private String getCookie() {
+		return
+			"__utma%3D" +
+			cookie + "." +
+			cookie + "." +
+			cookie + "." +
+			cookie + "." +
+			cookie + ".1%3B";
 	}
 }

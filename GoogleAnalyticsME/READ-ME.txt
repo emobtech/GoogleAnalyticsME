@@ -1,5 +1,5 @@
 ********************************************************************************
-*                      Google Analytics ME 1.0 - READ ME                       *
+*                      Google Analytics ME 1.1 - READ ME                       *
 ********************************************************************************
 *                  http://kenai.com/projects/googleanalyticsme                 *
 ********************************************************************************
@@ -7,8 +7,11 @@
  DESCRIPTION:
 ********************************************************************************
 
-This project defines a Java library to integrate Java ME apps into Google
-Analytics.
+This project is a compelling and well defined API for Java ME developers who 
+wish to integrate their apps into Google Analytics. With this API, developers 
+will be able to prepare their apps to send out useful data, about how users are 
+interacting with them. Those data will be valuable to identify, e.g., audience 
+and improvement points.
 
  MINIMUM REQUIREMENTS:
 ********************************************************************************
@@ -21,7 +24,7 @@ Analytics.
 
  AVAILABLE IN THIS VERSION:
 ********************************************************************************
-- Track Page Views and Events.
+- Bug fix related to visitor identification.
 
  KNOWN BUGS IN THIS VERSION:
 ********************************************************************************
@@ -31,6 +34,6 @@ Analytics.
 ********************************************************************************
 - None
 
- COMING NEXT VERSION: 1.1
+ COMING NEXT VERSION: 1.2
 ********************************************************************************
 - Let us know what you need.

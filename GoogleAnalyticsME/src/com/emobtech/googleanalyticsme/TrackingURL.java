@@ -124,7 +124,13 @@ public final class TrackingURL {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object obj) {
-		return toString().equals(obj);
+		if (this == obj) {
+			return true;
+		} else if (obj == null || !(obj instanceof TrackingURL)) {
+			return false;
+		} else {
+			return toString().equals(obj.toString());
+		}
 	}
 	
 	/**

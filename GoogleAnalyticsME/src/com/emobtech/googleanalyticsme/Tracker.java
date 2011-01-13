@@ -259,7 +259,7 @@ public final class Tracker {
 	 * @throws IOException If any I/O error accours.
 	 */
 	synchronized void process(Request request) throws IOException {
-		final String userAgent = "Google Analytics ME/1.1 (compatible; Profile/MIDP-2.1 Configuration/CLDC-1.1)";
+		final String userAgent = "Google Analytics ME/1.1 (compatible; Profile/MIDP-2.0 Configuration/CLDC-1.0)";
 		//
 		String url = request.url(trackingCode);
 		HttpConnection conn = null;

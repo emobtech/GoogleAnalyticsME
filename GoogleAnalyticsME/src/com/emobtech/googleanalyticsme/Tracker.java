@@ -15,8 +15,15 @@ import java.util.Vector;
 
 import com.emobtech.googleanalyticsme.util.StringUtil;
 
+//#ifdef JAVA_ME
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
+//#endif
+
+//#ifdef ANDROID
+//@import java.net.HttpURLConnection;
+//@import java.net.URL;
+//#endif
 
 /**
  * <p>
@@ -172,10 +179,15 @@ public final class Tracker {
 	 * {@link Tracker#addToQueue(Request)} method.
 	 * </p>
 	 * @param request Event.
+	 * @throws IllegalArgumentException If request is null.
 	 * @see PageView
 	 * @see Event
 	 */
 	public void track(Request request) {
+		if (request == null) {
+			throw new IllegalArgumentException("Request must not be null.");
+		}
+		//
 		try {
 			process(request);
 		} catch (IOException e) {
@@ -194,10 +206,15 @@ public final class Tracker {
 	 * {@link Tracker#flush(boolean)} method.
 	 * </p>
 	 * @param request Event.
+	 * @throws IllegalArgumentException If request is null.
 	 * @see PageView
 	 * @see Event
 	 */
 	public void addToQueue(Request request) {
+		if (request == null) {
+			throw new IllegalArgumentException("Request must not be null.");
+		}
+		//
 		synchronized (queue) {
 			queue.addElement(request);
 		}
@@ -262,6 +279,8 @@ public final class Tracker {
 		final String userAgent = "Google Analytics ME/1.1 (compatible; Profile/MIDP-2.0 Configuration/CLDC-1.0)";
 		//
 		String url = request.url(trackingCode);
+		//
+		//#ifdef JAVA_ME
 		HttpConnection conn = null;
 		//
 		try {
@@ -278,6 +297,28 @@ public final class Tracker {
 				conn.close();
 			}
 		}
+		//#endif
+		//
+		//#ifdef ANDROID
+//@		HttpURLConnection conn = null;
+//@		//
+//@		try {
+//@			conn = (HttpURLConnection) new URL(url).openConnection();
+//@			conn.setRequestProperty("User-Agent", userAgent);
+//@			conn.setInstanceFollowRedirects(true);
+//@			conn.connect();
+//@			//
+//@			if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+//@				throw new IOException();
+//@			}
+//@		} catch (IOException e) {
+//@			throw e;
+//@		} finally {
+//@			if (conn != null) {
+//@				conn.disconnect();
+//@			}
+//@		}
+		//#endif
 	}
 	
 	/**

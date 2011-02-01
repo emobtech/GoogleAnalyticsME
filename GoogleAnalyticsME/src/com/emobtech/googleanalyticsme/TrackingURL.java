@@ -61,6 +61,34 @@ public final class TrackingURL {
 	
 	/**
 	 * <p>
+	 * Returns cookie.
+	 * </p>
+	 * @return Cookie.
+	 */
+	static String getCookie() {
+		return
+			"__utma%3D" +
+			cookie + "." +
+			cookie + "." +
+			cookie + "." +
+			cookie + "." +
+			cookie + ".1%3B";
+	}
+
+	/**
+	 * <p>
+	 * Returns the value of a given property.
+	 * </p>
+	 * @param key Property key.
+	 * @param defaultValue Default value in case property´s value is null.
+	 * @return Value.
+	 */
+	static String getProperty(String key, String defaultValue) {
+		return (key = System.getProperty(key)) != null ? key : defaultValue;
+	}
+
+	/**
+	 * <p>
 	 * Creates an instance of TrackingURL class. 
 	 * </p>
 	 * @param trackingCode Tracking code.
@@ -121,6 +149,23 @@ public final class TrackingURL {
 	}
 	
 	/**
+	 * <p>
+	 * Returns the values associated to the given key.
+	 * </p>
+	 * @param key
+	 * @return Value or <code>null</code> if the key does not exist.
+	 */
+	public String getParameter(String key) {
+		if (keys.contains(key)) {
+			int ix = keys.indexOf(key);
+			//
+			return (String)values.elementAt(ix);
+		} else {
+			return null;
+		}
+	}
+	
+	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object obj) {
@@ -159,50 +204,27 @@ public final class TrackingURL {
 	private String queryString() {
 		StringBuffer query = new StringBuffer();
 		int size = keys.size();
+		String key;
 		String value;
 		//
 		for (int i = 0; i < size; i++) {
+			key = (String)keys.elementAt(i);
 			value = (String)values.elementAt(i);
 			//
-			if (!StringUtil.isEmpty(value)) {
-				query.append(keys.elementAt(i));
+			if (!StringUtil.isEmpty(key) && !StringUtil.isEmpty(value)) {
+				query.append(key);
 				query.append("=");
 				query.append(value);
-				//
-				if (i +1 < size) {
-					query.append("&");
-				}
+				query.append("&");
 			}
 		}
 		//
-		return query.toString();
-	}
-	
-	/**
-	 * <p>
-	 * Returns the value of a given property.
-	 * </p>
-	 * @param key Property key.
-	 * @param defaultValue Default value in case property´s value is null.
-	 * @return Value.
-	 */
-	private String getProperty(String key, String defaultValue) {
-		return (key = System.getProperty(key)) != null ? key : defaultValue;
-	}
-	
-	/**
-	 * <p>
-	 * Returns cookie.
-	 * </p>
-	 * @return Cookie.
-	 */
-	private String getCookie() {
-		return
-			"__utma%3D" +
-			cookie + "." +
-			cookie + "." +
-			cookie + "." +
-			cookie + "." +
-			cookie + ".1%3B";
+		String queryStr = query.toString(); 
+		//
+		if (queryStr.endsWith("&")) {
+			queryStr = queryStr.substring(0, queryStr.length() -1);
+		}
+		//
+		return queryStr;
 	}
 }

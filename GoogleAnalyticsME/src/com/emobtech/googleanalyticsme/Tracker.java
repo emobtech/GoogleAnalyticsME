@@ -342,6 +342,7 @@ public final class Tracker {
 					timer.schedule(task, delay, flushInterval);
 				}
 			} else {
+				task = new Task();
 				timer.schedule(task, delay);
 			}
 		}

@@ -80,7 +80,7 @@ public final class TrackingURL {
 	 * Returns the value of a given property.
 	 * </p>
 	 * @param key Property key.
-	 * @param defaultValue Default value in case property´s value is null.
+	 * @param defaultValue Default value in case property's value is null.
 	 * @return Value.
 	 */
 	static String getProperty(String key, String defaultValue) {

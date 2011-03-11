@@ -15,12 +15,12 @@ import java.util.Vector;
 
 import com.emobtech.googleanalyticsme.util.StringUtil;
 
-//#ifdef JAVA_ME
+//#ifdef PP_JAVA_ME
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 //#endif
 
-//#ifdef ANDROID
+//#ifdef PP_ANDROID
 //@import java.net.HttpURLConnection;
 //@import java.net.URL;
 //#endif
@@ -280,7 +280,7 @@ public final class Tracker {
 		//
 		String url = request.url(trackingCode);
 		//
-		//#ifdef JAVA_ME
+		//#ifdef PP_JAVA_ME
 		HttpConnection conn = null;
 		//
 		try {
@@ -299,7 +299,7 @@ public final class Tracker {
 		}
 		//#endif
 		//
-		//#ifdef ANDROID
+		//#ifdef PP_ANDROID
 //@		HttpURLConnection conn = null;
 //@		//
 //@		try {

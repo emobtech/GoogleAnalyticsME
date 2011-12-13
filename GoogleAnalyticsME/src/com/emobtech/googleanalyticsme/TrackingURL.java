@@ -18,24 +18,16 @@ import com.emobtech.googleanalyticsme.util.URLEncoder;
  * This class represents a tracking URL, which is used for the communication
  * with Google Analytics, in order to track the application's events.
  * </p>
- * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @since 1.0
  */
-public final class TrackingURL {
+final class TrackingURL {
 	/**
 	 * <p>
 	 * Random number generator.
 	 * </p>
 	 */
 	private static final Random random = new Random(System.currentTimeMillis());
-	
-	/**
-	 * <p>
-	 * Cookie.
-	 * </p>
-	 */
-	private static final int cookie = random.nextInt();
 
 	/**
 	 * <p>
@@ -61,22 +53,6 @@ public final class TrackingURL {
 	
 	/**
 	 * <p>
-	 * Returns cookie.
-	 * </p>
-	 * @return Cookie.
-	 */
-	static String getCookie() {
-		return
-			"__utma%3D" +
-			cookie + "." +
-			cookie + "." +
-			cookie + "." +
-			cookie + "." +
-			cookie + ".1%3B";
-	}
-
-	/**
-	 * <p>
 	 * Returns the value of a given property.
 	 * </p>
 	 * @param key Property key.
@@ -91,14 +67,8 @@ public final class TrackingURL {
 	 * <p>
 	 * Creates an instance of TrackingURL class. 
 	 * </p>
-	 * @param trackingCode Tracking code.
 	 */
-	public TrackingURL(String trackingCode) {
-		if (StringUtil.isEmpty(trackingCode)) {
-			throw new IllegalArgumentException(
-				"Tracking code must not be empty.");
-		}
-		//
+	public TrackingURL() {
 		keys = new Vector(15);
 		values = new Vector(15);
 		//
@@ -106,16 +76,15 @@ public final class TrackingURL {
 		addParameter("utmn", random.nextInt() + "");
 		addParameter("utmcs", getProperty("microedition.encoding", "UTF-8"));
 		addParameter("utmul", getProperty("microedition.locale", "en-us"));
+		addParameter("utmje", "1");
 		addParameter("utmdt", "");
 		addParameter("utmhn", URLEncoder.encode("kenai.com"));
 		addParameter("utmr", URLEncoder.encode("http://kenai.com"));
 		addParameter("utmt", "");
 		addParameter("utme", "");
 		addParameter("utmp", "");
-		addParameter("utmac", trackingCode);
-		addParameter("utmcc", getCookie());
 	}
-	
+
 	/**
 	 * <p>
 	 * Adds a parameter to the URL.
@@ -166,6 +135,16 @@ public final class TrackingURL {
 	}
 	
 	/**
+	 * <p>
+	 * Gets the URL.
+	 * </p>
+	 * @return URL.
+	 */
+	public String getURL() {
+		return urlPreffix + '?' + queryString();
+	}
+	
+	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object obj) {
@@ -182,7 +161,7 @@ public final class TrackingURL {
 	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode() {
-		return toString().hashCode();
+		return getURL().hashCode();
 	}
 	
 	/**
@@ -192,7 +171,7 @@ public final class TrackingURL {
 	 * @return String.
 	 */
 	public String toString() {
-		return urlPreffix + '?' + queryString();
+		return getURL();
 	}
 
 	/**

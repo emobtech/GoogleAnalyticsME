@@ -15,12 +15,11 @@ import com.emobtech.googleanalyticsme.util.URLEncoder;
  * This class represents a Page View event. This event is used to track each
  * time a page or a screen is displayed to the user.
  * </p>
- * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @since 1.0
  * @see Tracker
  */
-public final class PageView implements Request {
+public final class PageView extends Request {
 	/**
 	 * <p>
 	 * Page's title.
@@ -61,17 +60,18 @@ public final class PageView implements Request {
 		this.title = title;
 		this.uri = !uri.startsWith("/") ? "/" + uri : uri;
 	}
-
+	
 	/**
-	 * @see com.emobtech.googleanalyticsme.Request#url(java.lang.String)
+	 * @see com.emobtech.googleanalyticsme.Request#trackingURL()
 	 */
-	public String url(String trackingCode) {
-		TrackingURL params = new TrackingURL(trackingCode);
-		params.addParameter("utmp", URLEncoder.encode(uri));
+	TrackingURL trackingURL() {
+		TrackingURL turl = super.trackingURL();
+		//
+		turl.addParameter("utmp", URLEncoder.encode(uri));
 		if (!StringUtil.isEmpty(title)) {
-			params.addParameter("utmdt", URLEncoder.encode(title));
+			turl.addParameter("utmdt", URLEncoder.encode(title));
 		}
 		//
-		return params.toString();
+		return turl;
 	}
 }

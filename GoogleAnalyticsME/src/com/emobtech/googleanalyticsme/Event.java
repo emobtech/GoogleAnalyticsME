@@ -17,43 +17,47 @@ import com.emobtech.googleanalyticsme.util.URLEncoder;
  * users hit the Play or Stop button.
  * </p>
  * <p>
- * For further information on Event tracking, access
- * <a href="http://code.google.com/apis/analytics/docs/tracking/eventTrackerOverview.html" target="_blank">
- *     Event Tracking Overview
- * </a>.
+ * For further information on Event tracking, access <a href=
+ * "http://code.google.com/apis/analytics/docs/tracking/eventTrackerOverview.html"
+ * target="_blank"> Event Tracking Overview </a>.
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @since 1.0
  * @see Tracker
  */
-public final class Event implements Request {
+public final class Event extends Request {
 	/**
 	 * <p>
 	 * Event request value.
 	 * </p>
 	 */
 	private String event;
-	
+
 	/**
 	 * <p>
 	 * Creates an instance of Event class.
 	 * </p>
 	 * <p>
-	 * For further information on event's values, access
-	 * <a href="http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html" target="_blank">
-	 *     Event Tracking Guide
-	 * </a>.
-	 * @param category The name you supply for the group of objects you want to
-	 *                 track.
-	 * @param action   A string that is uniquely paired with each category, and 
-	 *                 commonly used to define the type of user interaction for 
-	 *                 the web object. 
-	 * @param label    An optional string to provide additional dimensions to 
-	 *                 the event data. 
-	 * @param value    An integer that you can use to provide numerical data
-	 *                 about the user event. 
-	 * @throws If category or action is empty.
+	 * For further information on event's values, access <a href=
+	 * "http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html"
+	 * target="_blank"> Event Tracking Guide </a>.
+	 * 
+	 * @param category
+	 *            The name you supply for the group of objects you want to
+	 *            track.
+	 * @param action
+	 *            A string that is uniquely paired with each category, and
+	 *            commonly used to define the type of user interaction for the
+	 *            web object.
+	 * @param label
+	 *            An optional string to provide additional dimensions to the
+	 *            event data.
+	 * @param value
+	 *            An integer that you can use to provide numerical data about
+	 *            the user event.
+	 * @throws If
+	 *             category or action is empty.
 	 */
 	public Event(String category, String action, String label, Integer value) {
 		if (StringUtil.isEmpty(category)) {
@@ -84,13 +88,14 @@ public final class Event implements Request {
 	}
 
 	/**
-	 * @see com.emobtech.googleanalyticsme.Request#url(java.lang.String)
+	 * @see com.emobtech.googleanalyticsme.Request#trackingURL()
 	 */
-	public String url(String trackingCode) {
-		TrackingURL params = new TrackingURL(trackingCode);
-		params.addParameter("utmt", "event");
-		params.addParameter("utme", URLEncoder.encode(event));
+	TrackingURL trackingURL() {
+		TrackingURL turl = super.trackingURL();
 		//
-		return params.toString();
+		turl.addParameter("utmt", "event");
+		turl.addParameter("utme", URLEncoder.encode(event));
+		//
+		return turl;
 	}
 }

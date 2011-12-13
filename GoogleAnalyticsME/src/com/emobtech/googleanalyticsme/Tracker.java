@@ -9,46 +9,43 @@ package com.emobtech.googleanalyticsme;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-import com.emobtech.googleanalyticsme.util.StringUtil;
-
-//#ifdef PP_JAVA_ME
-import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
-//#endif
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.midlet.MIDlet;
 
-//#ifdef PP_ANDROID
-//@import java.net.HttpURLConnection;
-//@import java.net.URL;
-//#endif
+import com.emobtech.googleanalyticsme.io.HttpConnector;
+import com.emobtech.googleanalyticsme.util.PropertyStore;
+import com.emobtech.googleanalyticsme.util.StringUtil;
 
 /**
  * <p>
  * This class is responsible for tracking an application's events, in order to
  * send to Google Analytics. A Tracker object must be associated to given Google
- * Analytics tracking code, which represents a application's account.
+ * Analytics Application Id, which represents a application's account.
  * </p>
- * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @since 1.0
  */
 public final class Tracker {
 	/**
 	 * <p>
-	 * Pool of Tracker objects. Only one object per tracking code.
+	 * Pool of Tracker objects. Only one object per Application Id.
 	 * </p>
 	 */
 	private static Hashtable trackerPool;
 	
 	/**
 	 * <p>
-	 * Google Analytics tracking code.
+	 * Google Analytics Application Id.
 	 * </p>
 	 */
-	private String trackingCode;
+	private String appId;
 	
 	/**
 	 * <p>
@@ -80,7 +77,42 @@ public final class Tracker {
 	
 	/**
 	 * <p>
-	 * Creates a Tracker object associated to the given tracking code.
+	 * User local Id.
+	 * </p>
+	 */
+	private int userId;
+	
+	/**
+	 * <p>
+	 * Timestamp of first visit.
+	 * </p>
+	 */
+	private long firstVisitTimestamp;
+
+	/**
+	 * <p>
+	 * Timestamp of last visit.
+	 * </p>
+	 */
+	private long lastVisitTimestamp;
+	
+	/**
+	 * <p>
+	 * Timestamp of current visit.
+	 * </p>
+	 */
+	private final long currentVisitTimestamp;
+	
+	/**
+	 * <p>
+	 * MIDlet.
+	 * </p>
+	 */
+	private MIDlet midlet;
+	
+	/**
+	 * <p>
+	 * Creates a Tracker object associated to the given Application Id.
 	 * </p>
 	 * <p>
 	 * A Tracker object will flush automatically all queued events. The 
@@ -91,17 +123,19 @@ public final class Tracker {
 	 * In addition, explicit calls to {@link Tracker#flush(boolean)} will also
 	 * flush the queued events, without affecting the automatic process.
 	 * </p>
-	 * @param trackingCode App's tracking code.
+	 * @param midlet MIDlet instance.
+	 * @param appId Application Id.
 	 * @return Tracker object.
-	 * @throws IllegalArgumentException If tracking code is empty.
+	 * @throws IllegalArgumentException If MIDlet or Application Id is null.
 	 */
-	public synchronized static Tracker getInstance(String trackingCode) {
-		return getInstance(trackingCode, 90);
+	public synchronized static Tracker getInstance(MIDlet midlet,
+		String appId) {
+		return getInstance(midlet, appId, 90);
 	}
 	
 	/**
 	 * <p>
-	 * Creates a Tracker object associated to the given tracking code.
+	 * Creates a Tracker object associated to the given Application Id.
 	 * </p>
 	 * <p>
 	 * A Tracker object will flush automatically all queued events. The 
@@ -120,27 +154,31 @@ public final class Tracker {
 	 * {@link Tracker#flush(boolean)}. Otherwise, you may just work with 
 	 * {@link Tracker#track(Request)}, which send the events synchronously.
 	 * </p>
-	 * @param trackingCode App's tracking code.
+	 * @param midlet MIDlet instance.
+	 * @param appId Application Id.
 	 * @param flushInterval Automatic flush interval (in seconds).
 	 * @return Tracker object.
-	 * @throws IllegalArgumentException If tracking code is empty.
+	 * @throws IllegalArgumentException If MIDlet or Application Id is null.
 	 */
-	public synchronized static Tracker getInstance(String trackingCode,
+	public synchronized static Tracker getInstance(MIDlet midlet, String appId,
 		long flushInterval) {
-		if (StringUtil.isEmpty(trackingCode)) {
+		if (midlet == null) {
+			throw new IllegalArgumentException("MIDlet must not be null.");
+		}
+		if (StringUtil.isEmpty(appId)) {
 			throw new IllegalArgumentException(
-				"Tracking code must not be empty.");
+				"Application Id must not be empty.");
 		}
 		//
 		if (trackerPool == null) {
 			trackerPool = new Hashtable();
 		}
 		//
-		Tracker tracker = (Tracker)trackerPool.get(trackingCode);
+		Tracker tracker = (Tracker)trackerPool.get(appId);
 		//
 		if (tracker == null) {
-			tracker = new Tracker(trackingCode, flushInterval);
-			trackerPool.put(trackingCode, tracker);
+			tracker = new Tracker(midlet, appId, flushInterval);
+			trackerPool.put(appId, tracker);
 		}
 		//
 		return tracker;
@@ -150,14 +188,19 @@ public final class Tracker {
 	 * <p>
 	 * Creates an instance of Tracker class.
 	 * </p>
-	 * @param trackingCode App's tracking code.
+	 * @param midlet MIDlet instance.
+	 * @param appId Application Id.
 	 * @param flushInterval Automatic flush interval (in seconds).
 	 */
-	private Tracker(String trackingCode, long flushInterval) {
+	private Tracker(MIDlet midlet, String appId, long flushInterval) {
 		flushInterval *= 1000; //secs to millis.
 		//
-		this.trackingCode = trackingCode;
+		this.midlet = midlet;
+		this.appId = appId;
 		this.flushInterval = flushInterval;
+		this.currentVisitTimestamp = System.currentTimeMillis();
+		//
+		loadCookie();
 		//
 		queue = new Vector(5);
 		timer = new Timer();
@@ -188,6 +231,8 @@ public final class Tracker {
 			throw new IllegalArgumentException("Request must not be null.");
 		}
 		//
+		fillRequestParams(request);
+		//
 		try {
 			process(request);
 		} catch (IOException e) {
@@ -214,6 +259,8 @@ public final class Tracker {
 		if (request == null) {
 			throw new IllegalArgumentException("Request must not be null.");
 		}
+		//
+		fillRequestParams(request);
 		//
 		synchronized (queue) {
 			queue.addElement(request);
@@ -251,7 +298,7 @@ public final class Tracker {
 	 * Processes all queued events.
 	 * </p>
 	 */
-	synchronized void processQueue() {
+	private synchronized void processQueue() {
 		int size = queue.size();
 		int head = 0;
 		//
@@ -275,17 +322,14 @@ public final class Tracker {
 	 * @param request Request.
 	 * @throws IOException If any I/O error accours.
 	 */
-	synchronized void process(Request request) throws IOException {
-		final String userAgent = "Google Analytics ME/1.1 (compatible; Profile/MIDP-2.0 Configuration/CLDC-1.0)";
+	private synchronized void process(Request request) throws IOException {
+		TrackingURL turl = request.trackingURL();
 		//
-		String url = request.url(trackingCode);
-		//
-		//#ifdef PP_JAVA_ME
 		HttpConnection conn = null;
 		//
 		try {
-			conn = (HttpConnection)Connector.open(url);
-			conn.setRequestProperty("User-Agent", userAgent);
+			conn = HttpConnector.open(turl.getURL());
+			conn.setRequestProperty("User-Agent", getUserAgent());
 			//
 			if (conn.getResponseCode() != HttpConnection.HTTP_OK) {
 				throw new IOException();
@@ -297,28 +341,6 @@ public final class Tracker {
 				conn.close();
 			}
 		}
-		//#endif
-		//
-		//#ifdef PP_ANDROID
-//@		HttpURLConnection conn = null;
-//@		//
-//@		try {
-//@			conn = (HttpURLConnection) new URL(url).openConnection();
-//@			conn.setRequestProperty("User-Agent", userAgent);
-//@			conn.setInstanceFollowRedirects(true);
-//@			conn.connect();
-//@			//
-//@			if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-//@				throw new IOException();
-//@			}
-//@		} catch (IOException e) {
-//@			throw e;
-//@		} finally {
-//@			if (conn != null) {
-//@				conn.disconnect();
-//@			}
-//@		}
-		//#endif
 	}
 	
 	/**
@@ -327,7 +349,7 @@ public final class Tracker {
 	 * </p>
 	 * @param delay Delay (in millis).
 	 */
-	void runTask(long delay) {
+	private void runTask(long delay) {
 		if (!task.isRunning) {
 			if (flushInterval > 0) {
 				long delayNextRun =
@@ -346,6 +368,74 @@ public final class Tracker {
 				timer.schedule(task, delay);
 			}
 		}
+	}
+	
+	/**
+	 * <p>
+	 * Fill the request's parameters.
+	 * </p>
+	 * @param request Request.
+	 */
+	private void fillRequestParams(Request request) {
+		request.setAppId(appId);
+		request.setUserId(userId);
+		request.setFirstVisitTimestamp(firstVisitTimestamp);
+		request.setLastVisitTimestamp(lastVisitTimestamp);
+		request.setCurrentVisitTimestamp(currentVisitTimestamp);
+		//
+		Display display = Display.getDisplay(midlet);
+		Displayable screen = display.getCurrent();
+		//
+		request.setScreenWidth(screen.getWidth());
+		request.setScreenHeight(screen.getHeight());
+		request.setNumberOfColors(display.numColors());
+	}
+	
+	/**
+	 * <p>
+	 * Loads cookie.
+	 * </p>
+	 */
+	private void loadCookie() {
+		PropertyStore prefs = new PropertyStore(appId);
+		//
+		if (prefs.size() > 0) {
+			userId = prefs.getInt("userId");
+			firstVisitTimestamp = prefs.getLong("firstVisitTimestamp");
+			lastVisitTimestamp = prefs.getLong("lastVisitTimestamp");
+			//
+			prefs.putLong("lastVisitTimestamp", currentVisitTimestamp);
+		} else {
+			userId = new Random().nextInt(2147483647) -1;
+			firstVisitTimestamp = currentVisitTimestamp;
+			lastVisitTimestamp = currentVisitTimestamp;
+			//
+			prefs.putInt("userId", userId);
+			prefs.putLong("firstVisitTimestamp", firstVisitTimestamp);
+			prefs.putLong("lastVisitTimestamp", lastVisitTimestamp);
+		}
+		//
+		prefs.save();
+	}
+	
+	/**
+	 * <p>
+	 * Gets user agent.
+	 * </p>
+	 * @return Agent.
+	 */
+	private String getUserAgent() {
+		final String plarform = System.getProperty("microedition.platform");
+		final String userAgent =
+			midlet.getAppProperty("MIDlet-Name") + "/" + 
+			midlet.getAppProperty("MIDlet-Version") + 
+			" (compatible; " + (plarform != null ? plarform + "; " : "") +
+			"Profile/" + System.getProperty("MicroEdition-Profile") +
+			" Configuration/" +	
+			System.getProperty("MicroEdition-Configuration") +
+			")";
+		//
+		return userAgent;
 	}
 
 	/**

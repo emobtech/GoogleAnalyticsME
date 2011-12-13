@@ -1,0 +1,44 @@
+********************************************************************************
+*                      Google Analytics ME 1.2 - READ ME                       *
+********************************************************************************
+*                  http://kenai.com/projects/googleanalyticsme                 *
+********************************************************************************
+
+ DESCRIPTION:
+********************************************************************************
+
+This project is a compelling and well defined API for Java ME and Android
+developers who wish to integrate their apps into Google Analytics. With this
+API, developers will be able to prepare their apps to send out useful data,
+about how users are interacting with them. Those data will be valuable to 
+identify, e.g., audience and improvement points.
+
+ MINIMUM REQUIREMENTS:
+********************************************************************************
++ Runtime Environment
+  - Java ME: MIDP 2.0 / CLDC 1.0
+  - Android 1.5
+
++ Development Environment
+  - Java SDK 1.6
+  - Java ME platform SDK 3.0, WTK 2.5.2 or any other compatible Java ME SDK
+  - Android SDK 1.1 or newer.
+  - Java Preprocessor (e.g. Antenna Preprocessor Plug-in for Eclipse)
+  - JUnit 3
+
+ AVAILABLE IN THIS VERSION:
+********************************************************************************
+- Android 1.5 support.
+- Bug fixes.
+
+ KNOWN BUGS IN THIS VERSION:
+********************************************************************************
+- None
+
+ REMARKS:
+********************************************************************************
+- None
+
+ COMING NEXT VERSION: 1.3
+********************************************************************************
+- Let us know what you need.

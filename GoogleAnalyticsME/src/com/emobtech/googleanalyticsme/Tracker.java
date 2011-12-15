@@ -442,7 +442,6 @@ public final class Tracker {
 	 * <p>
 	 * Task that executes the flushing process.
 	 * </p>
-	 * 
 	 * @author Ernandes Mourao Junior (ernandes@gmail.com)
 	 * @since 1.0
 	 */

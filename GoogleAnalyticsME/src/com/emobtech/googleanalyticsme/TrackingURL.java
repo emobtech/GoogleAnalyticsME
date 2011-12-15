@@ -11,7 +11,6 @@ import java.util.Random;
 import java.util.Vector;
 
 import com.emobtech.googleanalyticsme.util.StringUtil;
-import com.emobtech.googleanalyticsme.util.URLEncoder;
 
 /**
  * <p>
@@ -78,8 +77,8 @@ final class TrackingURL {
 		addParameter("utmul", getProperty("microedition.locale", "en-us"));
 		addParameter("utmje", "1");
 		addParameter("utmdt", "");
-		addParameter("utmhn", URLEncoder.encode("kenai.com"));
-		addParameter("utmr", URLEncoder.encode("http://kenai.com"));
+		addParameter("utmhn", "localhost");
+		addParameter("utmr", "");
 		addParameter("utmt", "");
 		addParameter("utme", "");
 		addParameter("utmp", "");

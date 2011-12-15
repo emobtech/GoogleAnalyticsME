@@ -14,7 +14,6 @@ import java.io.UnsupportedEncodingException;
  * <p>
  * This class is responsible for enconding strings.
  * </p>
- * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @since 1.0
  */

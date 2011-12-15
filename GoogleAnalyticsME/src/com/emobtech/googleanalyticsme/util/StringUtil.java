@@ -11,7 +11,6 @@ package com.emobtech.googleanalyticsme.util;
  * <p>
  * This class implements a set of util string methods.
  * </p>
- * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @since 1.0
  */

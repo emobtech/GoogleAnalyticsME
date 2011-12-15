@@ -21,7 +21,6 @@ import com.emobtech.googleanalyticsme.util.URLEncoder;
  * "http://code.google.com/apis/analytics/docs/tracking/eventTrackerOverview.html"
  * target="_blank"> Event Tracking Overview </a>.
  * </p>
- * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @since 1.0
  * @see Tracker
@@ -42,22 +41,17 @@ public final class Event extends Request {
 	 * For further information on event's values, access <a href=
 	 * "http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html"
 	 * target="_blank"> Event Tracking Guide </a>.
-	 * 
-	 * @param category
-	 *            The name you supply for the group of objects you want to
+	 * </p>
+	 * @param category The name you supply for the group of objects you want to
 	 *            track.
-	 * @param action
-	 *            A string that is uniquely paired with each category, and
+	 * @param action A string that is uniquely paired with each category, and
 	 *            commonly used to define the type of user interaction for the
 	 *            web object.
-	 * @param label
-	 *            An optional string to provide additional dimensions to the
+	 * @param label An optional string to provide additional dimensions to the
 	 *            event data.
-	 * @param value
-	 *            An integer that you can use to provide numerical data about
+	 * @param value An integer that you can use to provide numerical data about
 	 *            the user event.
-	 * @throws If
-	 *             category or action is empty.
+	 * @throws IllegalArgumentException if category or action is empty.
 	 */
 	public Event(String category, String action, String label, Integer value) {
 		if (StringUtil.isEmpty(category)) {

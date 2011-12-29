@@ -34,13 +34,14 @@ public final class HttpConnector {
 	private static Object rimConnParams;
 	
 	static {
+		final String RIM_CLASS =
+			"com.emobtech.googleanalyticsme.io.RIMConnectionString";
+		//
 		try {
-			rimConnParams = Class.forName(
-				"com.emobtech.googleanalyticsme.io.RIMConnectionString"
-					).newInstance();
-		} catch (ClassNotFoundException e) {
-		} catch (InstantiationException e) {
-		} catch (IllegalAccessException e) {
+			rimConnParams = Class.forName(RIM_CLASS).newInstance();
+			rimConnParams.toString();
+		} catch (Throwable e) {
+			rimConnParams = null;
 		}
 	}
 	

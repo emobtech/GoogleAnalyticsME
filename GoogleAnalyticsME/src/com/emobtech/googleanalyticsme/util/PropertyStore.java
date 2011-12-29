@@ -12,8 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.Vector;
 
 import javax.microedition.rms.RecordEnumeration;
 import javax.microedition.rms.RecordStore;
@@ -36,11 +35,18 @@ public final class PropertyStore {
 	
 	/**
 	 * <p>
-	 * Properties hash.
+	 * Properties keys.
 	 * </p>
 	 */
-	private Hashtable props;
+	private Vector propsKeys;
 	
+	/**
+	 * <p>
+	 * Properties values.
+	 * </p>
+	 */
+	private Vector propsValues;
+
 	/**
 	 * <p>
 	 * Creates an instance of PropertyStore class.
@@ -49,7 +55,8 @@ public final class PropertyStore {
 	 */
 	public PropertyStore(String filename) {
 		this.filename = filename;
-		props = new Hashtable(5);
+		propsKeys = new Vector(5);
+		propsValues = new Vector(5);
 		//
 		open();
 	}
@@ -60,7 +67,6 @@ public final class PropertyStore {
 	 * </p>
 	 */
 	public void save() {
-		Enumeration keys = props.keys();
 		String key = null;
 		Object value = null;
 		RecordStore rsProps = null;
@@ -69,11 +75,11 @@ public final class PropertyStore {
 		DataOutputStream dos = new DataOutputStream(baos);
 		//
 		try {
-			while (keys.hasMoreElements()) {
-				key = keys.nextElement().toString();
-				value = props.get(key);
+			for (int i = propsKeys.size() -1; i >= 0; i--) {
+				key = propsKeys.elementAt(i).toString();
+				value = propsValues.elementAt(i);
 				//
-				dos.writeUTF(key.toString());
+				dos.writeUTF(key);
 				//
 				if (value instanceof String) {
 					dos.writeUTF("string");
@@ -120,9 +126,9 @@ public final class PropertyStore {
 	 * @param value Value.
 	 */
 	public void putString(String key, String value) {
-		props.put(key, value);
+		set(key, value);
 	}
-
+	
 	/**
 	 * <p>
 	 * Puts a given int in the properties file.
@@ -131,7 +137,7 @@ public final class PropertyStore {
 	 * @param value Value.
 	 */
 	public void putInt(String key, int value) {
-		props.put(key, new Integer(value));
+		set(key, new Integer(value));
 	}
 	
 	/**
@@ -142,7 +148,7 @@ public final class PropertyStore {
 	 * @param value Value.
 	 */
 	public void putLong(String key, long value) {
-		props.put(key, new Long(value));
+		set(key, new Long(value));
 	}
 	
 	/**
@@ -154,7 +160,7 @@ public final class PropertyStore {
 	 * @return Value.
 	 */
 	public String getString(String key) {
-		return (String)props.get(key);
+		return (String)get(key);
 	}
 	
 	/**
@@ -166,8 +172,10 @@ public final class PropertyStore {
 	 * @return Value.
 	 */
 	public int getInt(String key) {
-		if (props.contains(key)) {
-			return ((Integer)props.get(key)).intValue();
+		final Object v = get(key);
+		//
+		if (v != null) {
+			return ((Integer)v).intValue();
 		} else {
 			return Integer.MIN_VALUE;
 		}
@@ -183,8 +191,10 @@ public final class PropertyStore {
 	 * @throws NullPointerException If the key is not found.
 	 */
 	public long getLong(String key) {
-		if (props.contains(key)) {
-			return ((Long)props.get(key)).longValue();	
+		final Object v = get(key);
+		//
+		if (v != null) {
+			return ((Long)v).longValue();	
 		} else {
 			return Long.MIN_VALUE;
 		}
@@ -197,7 +207,7 @@ public final class PropertyStore {
 	 * @return Number.
 	 */
 	public int size() {
-		return props.size();
+		return propsKeys.size();
 	}
 
 	/**
@@ -226,11 +236,14 @@ public final class PropertyStore {
 					type = dis.readUTF();
 					//
 					if (type.equals("string")) {
-						props.put(key, dis.readUTF());
+						propsKeys.addElement(key);
+						propsValues.addElement(dis.readUTF());
 					} else if (type.equals("integer")) {
-						props.put(key, new Integer(dis.readInt()));
+						propsKeys.addElement(key);
+						propsValues.addElement(new Integer(dis.readInt()));
 					} else if (type.equals("long")) {
-						props.put(key, new Long(dis.readLong()));
+						propsKeys.addElement(key);
+						propsValues.addElement(new Long(dis.readLong()));
 					}
 				}
 	        }
@@ -243,6 +256,41 @@ public final class PropertyStore {
 				} catch (RecordStoreException e) {
 				}
 			}
+		}
+	}
+
+	/**
+	 * <p>
+	 * Set key/value.
+	 * </p>
+	 * @param key Key.
+	 * @param value Value.
+	 */
+	private void set(String key, Object value) {
+		final int index = propsKeys.indexOf(key);
+		//
+		if (index != -1) {
+			propsValues.setElementAt(value, index);
+		} else {
+			propsKeys.addElement(key);
+			propsValues.addElement(value);
+		}
+	}
+	
+	/**
+	 * <p>
+	 * Get key/value.
+	 * </p>
+	 * @param key Key.
+	 * @return Value.
+	 */
+	private Object get(String key) {
+		final int index = propsKeys.indexOf(key);
+		//
+		if (index != -1) {
+			return propsValues.elementAt(index);
+		} else {
+			return null;
 		}
 	}
 }

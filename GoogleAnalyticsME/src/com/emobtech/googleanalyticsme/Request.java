@@ -58,21 +58,21 @@ public abstract class Request {
 	 * Screen height.
 	 * </p>
 	 */
-	private int screenHeight;
+	private int screenHeight = -1;
 
 	/**
 	 * <p>
 	 * Screen width.
 	 * </p>
 	 */
-	private int screenWidth;
+	private int screenWidth = -1;
 	
 	/**
 	 * <p>
 	 * Number of colors.
 	 * </p>
 	 */
-	private int numberOfColors;
+	private int numberOfColors = -1;
 
 	/**
 	 * <p>
@@ -286,8 +286,12 @@ public abstract class Request {
 		//
 		turl.addParameter("utmac", appId);
 		turl.addParameter("utmcc", getCookie());
-		turl.addParameter("utmsr", getScreenWidth() + "x" + getScreenHeight());
-		turl.addParameter("utmsc", getColorDepth(numberOfColors) + "-bit");
+		if (screenWidth != -1 && screenHeight != -1) {
+			turl.addParameter("utmsr", screenWidth + "x" + screenHeight);	
+		}
+		if (numberOfColors != -1) {
+			turl.addParameter("utmsc", getColorDepth(numberOfColors) + "-bit");	
+		}
 		//
 		return turl;
 	}

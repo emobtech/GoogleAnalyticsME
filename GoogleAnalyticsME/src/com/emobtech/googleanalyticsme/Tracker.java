@@ -130,7 +130,7 @@ public final class Tracker {
 	 */
 	public synchronized static Tracker getInstance(MIDlet midlet,
 		String appId) {
-		return getInstance(midlet, appId, 90);
+		return getInstance(midlet, appId, 60);
 	}
 	
 	/**
@@ -386,9 +386,11 @@ public final class Tracker {
 		Display display = Display.getDisplay(midlet);
 		Displayable screen = display.getCurrent();
 		//
-		request.setScreenWidth(screen.getWidth());
-		request.setScreenHeight(screen.getHeight());
-		request.setNumberOfColors(display.numColors());
+		if (screen != null) {
+			request.setScreenWidth(screen.getWidth());
+			request.setScreenHeight(screen.getHeight());
+			request.setNumberOfColors(display.numColors());
+		}
 	}
 	
 	/**
@@ -406,7 +408,7 @@ public final class Tracker {
 			//
 			prefs.putLong("lastVisitTimestamp", currentVisitTimestamp);
 		} else {
-			userId = new Random().nextInt(2147483647) -1;
+			userId = new Random(2147483647).nextInt() -1;
 			firstVisitTimestamp = currentVisitTimestamp;
 			lastVisitTimestamp = currentVisitTimestamp;
 			//
@@ -430,9 +432,9 @@ public final class Tracker {
 			midlet.getAppProperty("MIDlet-Name") + "/" + 
 			midlet.getAppProperty("MIDlet-Version") + 
 			" (compatible; " + (plarform != null ? plarform + "; " : "") +
-			"Profile/" + System.getProperty("MicroEdition-Profile") +
+			"Profile/" + midlet.getAppProperty("MicroEdition-Profile") +
 			" Configuration/" +	
-			System.getProperty("MicroEdition-Configuration") +
+			midlet.getAppProperty("MicroEdition-Configuration") +
 			")";
 		//
 		return userAgent;

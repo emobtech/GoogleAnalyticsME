@@ -1,8 +1,8 @@
 package com.emobtech.googleanalyticsme;
 
-import com.emobtech.googleanalyticsme.util.URLEncoder;
-
 import junit.framework.TestCase;
+
+import com.emobtech.googleanalyticsme.util.URLEncoder;
 
 public class EventTest extends TestCase {
 
@@ -56,23 +56,20 @@ public class EventTest extends TestCase {
 
 	public void testUrl() {
 		Event e = new Event("Category 1", "Action 1", "Value 1", new Integer(7));
-		String url = e.url("UA-54321A");
+		String url = e.trackingURL().getURL();
 		//
-		assertTrue(url.indexOf("&utmac=UA-54321A&") != -1);
 		assertTrue(url.indexOf("&utmt=event&") != -1);
 		assertTrue(url.indexOf("&utme=" + URLEncoder.encode("5(Category 1*Action 1*Value 1)(7)") + "&") != -1);
 		//
 		e = new Event("Category 2", "Action 2", "Value 2", null);
-		url = e.url("UA-54321A");
+		url = e.trackingURL().getURL();
 		//
-		assertTrue(url.indexOf("&utmac=UA-54321A&") != -1);
 		assertTrue(url.indexOf("&utmt=event&") != -1);
 		assertTrue(url.indexOf("&utme=" + URLEncoder.encode("5(Category 2*Action 2*Value 2)") + "&") != -1);
 		//
 		e = new Event("Category 3", "Action 3", null, null);
-		url = e.url("UA-54321A");
+		url = e.trackingURL().getURL();
 		//
-		assertTrue(url.indexOf("&utmac=UA-54321A&") != -1);
 		assertTrue(url.indexOf("&utmt=event&") != -1);
 		assertTrue(url.indexOf("&utme=" + URLEncoder.encode("5(Category 3*Action 3)") + "&") != -1);
 	}

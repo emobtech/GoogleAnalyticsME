@@ -281,6 +281,10 @@ public final class Tracker {
 	 * <p>
 	 * Forces all queued events to be sent to Google Analytics.
 	 * </p>
+	 * <p><b>
+	 * Make to sure to call this method (synchronously) before the app is
+	 * destroyed. Otherwise, any queued requests will be lost.
+	 * </b></p>
 	 * @param asynchronously Send event asynchronously (non-blocking).
 	 */
 	public void flush(boolean asynchronously) {
@@ -427,15 +431,19 @@ public final class Tracker {
 	 * @return Agent.
 	 */
 	private String getUserAgent() {
-		final String plarform = System.getProperty("microedition.platform");
-		final String userAgent =
-			midlet.getAppProperty("MIDlet-Name") + "/" + 
-			midlet.getAppProperty("MIDlet-Version") + 
-			" (compatible; " + (plarform != null ? plarform + "; " : "") +
-			"Profile/" + midlet.getAppProperty("MicroEdition-Profile") +
-			" Configuration/" +	
-			midlet.getAppProperty("MicroEdition-Configuration") +
-			")";
+		String midletName = midlet.getAppProperty("MIDlet-Name");
+		String midletVersion = midlet.getAppProperty("MIDlet-Version");
+		String profile = midlet.getAppProperty("MicroEdition-Profile");
+		String config = midlet.getAppProperty("MicroEdition-Configuration");
+		String device = System.getProperty("microedition.platform");
+		//
+		device = device != null ? StringUtil.extractDevice(device) : "Unknown";
+		//
+		String userAgent =
+			midletName + "/" + midletVersion + 
+			" (JavaME; " + 
+			device + "; " +
+			"Profile/" + profile + " Configuration/" + config + ")";
 		//
 		return userAgent;
 	}

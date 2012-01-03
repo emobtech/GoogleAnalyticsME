@@ -25,6 +25,39 @@ public final class StringUtil {
 	public static final boolean isEmpty(String str) {
 		return str == null || str.trim().length() == 0;
 	}
+	
+	/**
+	 * <p>
+	 * Extract device from platform.
+	 * </p>
+	 * @param platform Platform string.
+	 * @return Device.
+	 */
+	public static final String extractDevice(String platform) {
+		if (isEmpty(platform)) {
+			throw new IllegalArgumentException("Platform must not be emoty.");
+		}
+		//
+		int i = platform.indexOf('/');
+		//
+		if (i != -1) {
+			String device = platform.substring(0, i);
+			//
+			i = platform.indexOf(';', i);
+			//
+			if (i != -1) {
+				device = platform.substring(0, i);
+			} else if (i +1 < platform.length()) {
+				device = platform;
+			}
+			//
+			return device;
+		} else if ((i = platform.indexOf(';')) != -1) {
+			return platform.substring(0, i);
+		} else {
+			return platform;
+		}
+	}
     
 	/**
 	 * <p>

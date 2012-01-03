@@ -28,25 +28,6 @@ import com.emobtech.googleanalyticsme.util.StringUtil;
 public final class HttpConnector {
 	/**
 	 * <p>
-	 * RIM connection parameters.
-	 * </p> 
-	 */
-	private static Object rimConnParams;
-	
-	static {
-		final String RIM_CLASS =
-			"com.emobtech.googleanalyticsme.io.RIMConnectionString";
-		//
-		try {
-			rimConnParams = Class.forName(RIM_CLASS).newInstance();
-			rimConnParams.toString();
-		} catch (Throwable e) {
-			rimConnParams = null;
-		}
-	}
-	
-	/**
-	 * <p>
 	 * Create and open a HttpConnection.
 	 * </p>
 	 * @param url The URL for the connection.
@@ -57,10 +38,6 @@ public final class HttpConnector {
 	public static HttpConnection open(String url) throws IOException {
 		if (StringUtil.isEmpty(url)) {
 			throw new IllegalArgumentException("URL must not be empty.");
-		}
-		//
-		if (rimConnParams != null) {
-			url += rimConnParams.toString();
 		}
 		//
 		return (HttpConnection)Connector.open(url);

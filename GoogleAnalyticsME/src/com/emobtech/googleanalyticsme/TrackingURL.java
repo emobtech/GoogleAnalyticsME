@@ -49,18 +49,6 @@ final class TrackingURL {
 	 * </p>
 	 */
 	private Vector values = new Vector();
-	
-	/**
-	 * <p>
-	 * Returns the value of a given property.
-	 * </p>
-	 * @param key Property key.
-	 * @param defaultValue Default value in case property's value is null.
-	 * @return Value.
-	 */
-	static String getProperty(String key, String defaultValue) {
-		return (key = System.getProperty(key)) != null ? key : defaultValue;
-	}
 
 	/**
 	 * <p>
@@ -73,8 +61,8 @@ final class TrackingURL {
 		//
 		addParameter("utmwv", "1");
 		addParameter("utmn", random.nextInt() + "");
-		addParameter("utmcs", getProperty("microedition.encoding", "UTF-8"));
-		addParameter("utmul", getProperty("microedition.locale", "en-us"));
+		addParameter("utmcs", System.getProperty("microedition.encoding"));
+		addParameter("utmul", System.getProperty("microedition.locale"));
 		addParameter("utmje", "1");
 		addParameter("utmdt", "");
 		addParameter("utmhn", "localhost");

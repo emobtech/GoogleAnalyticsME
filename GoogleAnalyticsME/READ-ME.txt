@@ -27,8 +27,7 @@ and improvement points.
  AVAILABLE IN THIS VERSION:
 ********************************************************************************
 - Fixed issue that did not identify unique visitors.
-- Fixed issue that was incrementing number of visits according number of events.
-- Better idenfitication of user agent and its properties (e.g. screen size).
+- Better identification of user agent and its properties (e.g. screen size).
 
  KNOWN BUGS IN THIS VERSION:
 ********************************************************************************
@@ -40,10 +39,10 @@ and improvement points.
   issues mentioned about, as well as to implement some new features. We tried to
   avoid that, but it was really necessary. On the other hand, the impact in your
   code will be very small.
-- Android support was completely removed. This API is now 100% focused on Java 
-  ME platform, because there is already an official GA API for Android developed 
-  by Google. http://goo.gl/8Qm2b
-- Blackberry developers are also welcome to work with this API.
+- Android support was completely deprecated. This API is now 100% focused on 
+  Java ME platform, because there is already an official GA API for Android 
+  developed by Google. So we strongly recommend that for you Android app. 
+  http://goo.gl/8Qm2b
 
  COMING NEXT VERSION: 2.1
 ********************************************************************************

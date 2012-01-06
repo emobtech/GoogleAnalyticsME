@@ -14,4 +14,27 @@ public class StringUtilTest extends TestCase {
 		assertFalse(StringUtil.isEmpty("a     "));
 		assertFalse(StringUtil.isEmpty("abcdef"));
 	}
+	
+	public void testExtractDevice() {
+		assertEquals("Nokia", StringUtil.extractDevice("Nokia"));
+		assertEquals("Nokia", StringUtil.extractDevice("Nokia;E65"));
+		assertEquals("Nokia/E65", StringUtil.extractDevice("Nokia/E65"));
+		assertEquals("Nokia/E65", StringUtil.extractDevice("Nokia/E65;sw1.2"));
+		//
+		try {
+			StringUtil.extractDevice(null);
+			fail();
+		} catch (Exception e) {
+		}
+		try {
+			StringUtil.extractDevice("");
+			fail();
+		} catch (Exception e) {
+		}
+		try {
+			StringUtil.extractDevice("   ");
+			fail();
+		} catch (Exception e) {
+		}
+	}
 }

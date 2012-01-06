@@ -132,6 +132,16 @@ final class TrackingURL {
 	}
 	
 	/**
+	 * <p>
+	 * Gets the number of parameters in this url.
+	 * </p>
+	 * @return Number of parameters.
+	 */
+	public int size() {
+		return keys.size();
+	}
+	
+	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object obj) {

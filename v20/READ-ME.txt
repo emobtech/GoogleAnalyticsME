@@ -1,0 +1,49 @@
+********************************************************************************
+*                      Google Analytics ME 2.0 - READ ME                       *
+********************************************************************************
+*                  http://kenai.com/projects/googleanalyticsme                 *
+********************************************************************************
+
+ DESCRIPTION:
+********************************************************************************
+
+This project is a compelling and well defined API for Java ME developers who 
+wish to integrate their apps into Google Analytics. With this API, developers 
+will be able to prepare their apps to send out useful data, about how users are
+interacting with them. Those data will be valuable to identify, e.g., audience 
+and improvement points.
+
+ MINIMUM REQUIREMENTS:
+********************************************************************************
++ Runtime Environment
+  - Java ME: MIDP 2.0 / CLDC 1.0
+
++ Development Environment
+  - Java SDK 1.6
+  - Java ME platform SDK 3.0, WTK 2.5.2 or any other compatible Java ME SDK
+  - Antenna
+  - JUnit 3
+
+ AVAILABLE IN THIS VERSION:
+********************************************************************************
+- Fixed issue that did not identify unique visitors.
+- Better identification of user agent and its properties (e.g. screen size).
+
+ KNOWN BUGS IN THIS VERSION:
+********************************************************************************
+- None
+
+ REMARKS:
+********************************************************************************
+- In this version was implemented a complete code refactoring to fix some of the
+  issues mentioned about, as well as to implement some new features. We tried to
+  avoid that, but it was really necessary. On the other hand, the impact in your
+  code will be very small.
+- Android support was completely deprecated. This API is now 100% focused on 
+  Java ME platform, because there is already an official GA API for Android 
+  developed by Google. So we strongly recommend that for you Android app. 
+  http://goo.gl/8Qm2b
+
+ COMING NEXT VERSION: 2.1
+********************************************************************************
+- Let us know what you need.

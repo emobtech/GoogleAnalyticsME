@@ -47,7 +47,7 @@ public final class StringUtil {
 			//
 			if (i != -1) {
 				device = platform.substring(0, i);
-			} else if (i +1 < platform.length()) {
+			} else {
 				device = platform;
 			}
 			//

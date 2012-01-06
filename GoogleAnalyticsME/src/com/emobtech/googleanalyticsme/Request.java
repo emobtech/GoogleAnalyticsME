@@ -76,6 +76,32 @@ public abstract class Request {
 
 	/**
 	 * <p>
+	 * Gets color of depth.
+	 * </p>
+	 * @param numberOfColors Number of colors.
+	 * @return Depth.
+	 */
+	static int getColorDepth(int numberOfColors) {
+		switch (numberOfColors) {
+			case 2:
+				return 1;
+			case 4:
+				return 2;
+			case 16:
+				return 4;
+			case 256:
+				return 8;
+			case 65536:
+				return 16;
+			case 16777216:
+				return 24;
+			default:
+				return 32;
+		}
+	}
+
+	/**
+	 * <p>
 	 * Gets the Application Id.
 	 * </p>
 	 * @return Id.
@@ -234,32 +260,6 @@ public abstract class Request {
 		this.numberOfColors = numberOfColors;
 	}
 	
-	/**
-	 * <p>
-	 * Gets color of depth.
-	 * </p>
-	 * @param numberOfColors Number of colors.
-	 * @return Depth.
-	 */
-	int getColorDepth(int numberOfColors) {
-		switch (numberOfColors) {
-			case 2:
-				return 1;
-			case 4:
-				return 2;
-			case 16:
-				return 4;
-			case 256:
-				return 8;
-			case 65536:
-				return 16;
-			case 16777216:
-				return 24;
-			default:
-				return 32;
-		}
-	}
-
 	/**
 	 * <p>
 	 * Gets session cookie.

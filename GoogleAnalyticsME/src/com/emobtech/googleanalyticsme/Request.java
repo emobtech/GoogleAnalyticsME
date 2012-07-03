@@ -27,6 +27,13 @@ public abstract class Request {
 
 	/**
 	 * <p>
+	 * Domain hash.
+	 * </p>
+	 */
+	private int domainHash;
+
+	/**
+	 * <p>
 	 * User local Id.
 	 * </p>
 	 */
@@ -52,6 +59,13 @@ public abstract class Request {
 	 * </p>
 	 */
 	private long currentVisitTimestamp;
+	
+	/**
+	 * <p>
+	 * Number of visits.
+	 * </p>
+	 */
+	private int visitNumber;
 	
 	/**
 	 * <p>
@@ -142,6 +156,26 @@ public abstract class Request {
 
 	/**
 	 * <p>
+	 * Gets the domain hash.
+	 * </p>
+	 * @return Hash.
+	 */
+	int getDomainHash() {
+		return domainHash;
+	}
+
+	/**
+	 * <p>
+	 * Sets the domain hash.
+	 * </p>
+	 * @param domainHash Hash.
+	 */
+	void setDomainHash(int domainHash) {
+		this.domainHash = domainHash;
+	}
+
+	/**
+	 * <p>
 	 * Gets the timestamp of first visit.
 	 * </p>
 	 * @return Timestamp.
@@ -198,6 +232,26 @@ public abstract class Request {
 	 */
 	void setCurrentVisitTimestamp(long currentVisitTimestamp) {
 		this.currentVisitTimestamp = currentVisitTimestamp;
+	}
+
+	/**
+	 * <p>
+	 * Gets the number of visits.
+	 * </p>
+	 * @return Number.
+	 */
+	int getVisitNumber() {
+		return visitNumber;
+	}
+
+	/**
+	 * <p>
+	 * Sets the number of visits.
+	 * </p>
+	 * @param visitNumber Number.
+	 */
+	void setVisitNumber(int visitNumber) {
+		this.visitNumber = visitNumber;
 	}
 
 	/**
@@ -268,8 +322,13 @@ public abstract class Request {
 	 */
 	String getCookie() {
 		final String cookie =
-			"__utma%3D1." + userId + "." + firstVisitTimestamp + "." + 
-			lastVisitTimestamp + "." + currentVisitTimestamp + ".1;";
+			"__utma%3D" + 
+			domainHash + "." + 
+			userId + "." + 
+			firstVisitTimestamp + "." + 
+			lastVisitTimestamp + "." + 
+			currentVisitTimestamp + "." + 
+			visitNumber + ";";
 		//
 		return cookie;
 	}

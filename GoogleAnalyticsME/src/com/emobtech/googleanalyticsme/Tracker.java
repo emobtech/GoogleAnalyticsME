@@ -77,6 +77,13 @@ public final class Tracker {
 	
 	/**
 	 * <p>
+	 * Domain hash.
+	 * </p>
+	 */
+	private final int domainHash;
+	
+	/**
+	 * <p>
 	 * User local Id.
 	 * </p>
 	 */
@@ -102,6 +109,13 @@ public final class Tracker {
 	 * </p>
 	 */
 	private final long currentVisitTimestamp;
+	
+	/**
+	 * <p>
+	 * Number of visits.
+	 * </p>
+	 */
+	private int visitNumber;
 	
 	/**
 	 * <p>
@@ -196,6 +210,7 @@ public final class Tracker {
 		flushInterval *= 1000; //secs to millis.
 		//
 		this.midlet = midlet;
+		this.domainHash = appId.hashCode();
 		this.appId = appId;
 		this.flushInterval = flushInterval;
 		this.currentVisitTimestamp = System.currentTimeMillis();
@@ -383,9 +398,11 @@ public final class Tracker {
 	private void fillRequestParams(Request request) {
 		request.setAppId(appId);
 		request.setUserId(userId);
+		request.setDomainHash(domainHash);
 		request.setFirstVisitTimestamp(firstVisitTimestamp);
 		request.setLastVisitTimestamp(lastVisitTimestamp);
 		request.setCurrentVisitTimestamp(currentVisitTimestamp);
+		request.setVisitNumber(visitNumber);
 		//
 		Display display = Display.getDisplay(midlet);
 		Displayable screen = display.getCurrent();
@@ -410,15 +427,30 @@ public final class Tracker {
 			firstVisitTimestamp = prefs.getLong("firstVisitTimestamp");
 			lastVisitTimestamp = prefs.getLong("lastVisitTimestamp");
 			//
+			visitNumber = prefs.getInt("visitNumber");
+			if (visitNumber == Integer.MIN_VALUE) { //compatibility with 2.0!
+				visitNumber = 0;
+			}
+			visitNumber++;
+			//
 			prefs.putLong("lastVisitTimestamp", currentVisitTimestamp);
+			prefs.putInt("visitNumber", visitNumber);
 		} else {
-			userId = new Random(2147483647).nextInt() -1;
+			Random r = new Random(System.currentTimeMillis());
+			//
+			r.nextInt();
+			r.nextInt();
+			r.nextInt();
+			//
+			userId = Math.abs(r.nextInt());
 			firstVisitTimestamp = currentVisitTimestamp;
 			lastVisitTimestamp = currentVisitTimestamp;
+			visitNumber = 1;
 			//
 			prefs.putInt("userId", userId);
 			prefs.putLong("firstVisitTimestamp", firstVisitTimestamp);
 			prefs.putLong("lastVisitTimestamp", lastVisitTimestamp);
+			prefs.putInt("visitNumber", visitNumber);
 		}
 		//
 		prefs.save();
@@ -431,6 +463,12 @@ public final class Tracker {
 	 * @return Agent.
 	 */
 	private String getUserAgent() {
+		final String customUA = midlet.getAppProperty("GAME-Custom-UserAgent");
+		//
+		if (customUA != null) {
+			return customUA;
+		}
+		//
 		String midletName = midlet.getAppProperty("MIDlet-Name");
 		String midletVersion = midlet.getAppProperty("MIDlet-Version");
 		String profile = midlet.getAppProperty("MicroEdition-Profile");

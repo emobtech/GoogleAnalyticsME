@@ -19,27 +19,33 @@ public class RequestTest extends TestCase {
 		PageView p = new PageView("/page");
 		p.setAppId("UA-12345");
 		p.setUserId(777);
+		p.setDomainHash(12345);
 		p.setFirstVisitTimestamp(111);
 		p.setLastVisitTimestamp(222);
 		p.setCurrentVisitTimestamp(333);
+		p.setVisitNumber(7);
 		//
-		assertEquals("__utma%3D1.777.111.222.333.1;", p.getCookie());
+		assertEquals("__utma%3D12345.777.111.222.333.7;", p.getCookie());
 	}
 
 	public void testTrackingURL() {
 		PageView p = new PageView("/page");
 		p.setAppId("UA-12345");
 		p.setUserId(777);
+		p.setDomainHash(54321);
 		p.setFirstVisitTimestamp(111);
 		p.setLastVisitTimestamp(222);
 		p.setCurrentVisitTimestamp(333);
+		p.setVisitNumber(3);
 		//
 		assertEquals("UA-12345", p.getAppId());
 		assertEquals(777, p.getUserId());
+		assertEquals(54321, p.getDomainHash());
 		assertEquals(111, p.getFirstVisitTimestamp());
 		assertEquals(222, p.getLastVisitTimestamp());
 		assertEquals(333, p.getCurrentVisitTimestamp());
-		
+		assertEquals(3, p.getVisitNumber());
+		//
 		assertEquals(-1, p.getScreenWidth());
 		assertEquals(-1, p.getScreenHeight());
 		assertEquals(-1, p.getNumberOfColors());

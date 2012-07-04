@@ -27,6 +27,7 @@ and improvement points.
  AVAILABLE IN THIS VERSION:
 ********************************************************************************
 - Fixed issue that was not identifing properly unique visitors.
+- Improved session counter and visit duration calculation.
 - Assign a custom user agent throught the JAD property "GAME-Custom-UserAgent".
 
  KNOWN BUGS IN THIS VERSION:

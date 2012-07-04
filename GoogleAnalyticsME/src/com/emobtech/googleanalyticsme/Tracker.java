@@ -9,7 +9,6 @@ package com.emobtech.googleanalyticsme;
 
 import java.io.IOException;
 import java.util.Hashtable;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -20,7 +19,6 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.midlet.MIDlet;
 
 import com.emobtech.googleanalyticsme.io.HttpConnector;
-import com.emobtech.googleanalyticsme.util.PropertyStore;
 import com.emobtech.googleanalyticsme.util.StringUtil;
 
 /**
@@ -42,24 +40,17 @@ public final class Tracker {
 	
 	/**
 	 * <p>
-	 * Google Analytics Application Id.
-	 * </p>
-	 */
-	private String appId;
-	
-	/**
-	 * <p>
 	 * Queue of events.
 	 * </p>
 	 */
-	private Vector queue;
+	private final Vector queue;
 	
 	/**
 	 * <p>
 	 * Timer used by the background sending process.
 	 * </p>
 	 */
-	private Timer timer;
+	private final Timer timer;
 	
 	/**
 	 * <p>
@@ -73,56 +64,19 @@ public final class Tracker {
 	 * Automatic events flushing interval.
 	 * </p>
 	 */
-	private long flushInterval;
+	private final long flushInterval;
 	
 	/**
-	 * <p>
-	 * Domain hash.
-	 * </p>
+	 * Visitor's session.
 	 */
-	private final int domainHash;
-	
-	/**
-	 * <p>
-	 * User local Id.
-	 * </p>
-	 */
-	private int userId;
-	
-	/**
-	 * <p>
-	 * Timestamp of first visit.
-	 * </p>
-	 */
-	private long firstVisitTimestamp;
+	private final Session session;
 
-	/**
-	 * <p>
-	 * Timestamp of last visit.
-	 * </p>
-	 */
-	private long lastVisitTimestamp;
-	
-	/**
-	 * <p>
-	 * Timestamp of current visit.
-	 * </p>
-	 */
-	private final long currentVisitTimestamp;
-	
-	/**
-	 * <p>
-	 * Number of visits.
-	 * </p>
-	 */
-	private int visitNumber;
-	
 	/**
 	 * <p>
 	 * MIDlet.
 	 * </p>
 	 */
-	private MIDlet midlet;
+	private final MIDlet midlet;
 	
 	/**
 	 * <p>
@@ -210,12 +164,8 @@ public final class Tracker {
 		flushInterval *= 1000; //secs to millis.
 		//
 		this.midlet = midlet;
-		this.domainHash = appId.hashCode();
-		this.appId = appId;
 		this.flushInterval = flushInterval;
-		this.currentVisitTimestamp = System.currentTimeMillis();
-		//
-		loadCookie();
+		this.session = new Session(appId);
 		//
 		queue = new Vector(5);
 		timer = new Timer();
@@ -396,13 +346,15 @@ public final class Tracker {
 	 * @param request Request.
 	 */
 	private void fillRequestParams(Request request) {
-		request.setAppId(appId);
-		request.setUserId(userId);
-		request.setDomainHash(domainHash);
-		request.setFirstVisitTimestamp(firstVisitTimestamp);
-		request.setLastVisitTimestamp(lastVisitTimestamp);
-		request.setCurrentVisitTimestamp(currentVisitTimestamp);
-		request.setVisitNumber(visitNumber);
+		session.renewIfExpired();
+		//
+		request.setAppId(session.getAppId());
+		request.setUserId(session.getUserId());
+		request.setDomainHash(session.getDomainHash());
+		request.setFirstVisitTimestamp(session.getFirstVisitTimestamp());
+		request.setLastVisitTimestamp(session.getLastVisitTimestamp());
+		request.setCurrentVisitTimestamp(session.getCurrentVisitTimestamp());
+		request.setVisitNumber(session.getVisitNumber());
 		//
 		Display display = Display.getDisplay(midlet);
 		Displayable screen = display.getCurrent();
@@ -412,48 +364,8 @@ public final class Tracker {
 			request.setScreenHeight(screen.getHeight());
 			request.setNumberOfColors(display.numColors());
 		}
-	}
-	
-	/**
-	 * <p>
-	 * Loads cookie.
-	 * </p>
-	 */
-	private void loadCookie() {
-		PropertyStore prefs = new PropertyStore(appId);
 		//
-		if (prefs.size() > 0) {
-			userId = prefs.getInt("userId");
-			firstVisitTimestamp = prefs.getLong("firstVisitTimestamp");
-			lastVisitTimestamp = prefs.getLong("lastVisitTimestamp");
-			//
-			visitNumber = prefs.getInt("visitNumber");
-			if (visitNumber == Integer.MIN_VALUE) { //compatibility with 2.0!
-				visitNumber = 0;
-			}
-			visitNumber++;
-			//
-			prefs.putLong("lastVisitTimestamp", currentVisitTimestamp);
-			prefs.putInt("visitNumber", visitNumber);
-		} else {
-			Random r = new Random(System.currentTimeMillis());
-			//
-			r.nextInt();
-			r.nextInt();
-			r.nextInt();
-			//
-			userId = Math.abs(r.nextInt());
-			firstVisitTimestamp = currentVisitTimestamp;
-			lastVisitTimestamp = currentVisitTimestamp;
-			visitNumber = 1;
-			//
-			prefs.putInt("userId", userId);
-			prefs.putLong("firstVisitTimestamp", firstVisitTimestamp);
-			prefs.putLong("lastVisitTimestamp", lastVisitTimestamp);
-			prefs.putInt("visitNumber", visitNumber);
-		}
-		//
-		prefs.save();
+		session.updateLastRequestTimestamp();
 	}
 	
 	/**
@@ -493,7 +405,7 @@ public final class Tracker {
 	 * @author Ernandes Mourao Junior (ernandes@gmail.com)
 	 * @since 1.0
 	 */
-	private class Task extends TimerTask {
+	private final class Task extends TimerTask {
 		/**
 		 * <p>
 		 * End of last execution time.

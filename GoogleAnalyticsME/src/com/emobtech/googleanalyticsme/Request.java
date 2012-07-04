@@ -320,7 +320,7 @@ public abstract class Request {
 	 * </p>
 	 * @return Cookie.
 	 */
-	String getCookie() {
+	String getUTMACookie() {
 		final String cookie =
 			"__utma%3D" + 
 			domainHash + "." + 
@@ -344,7 +344,7 @@ public abstract class Request {
 		TrackingURL turl = new TrackingURL();
 		//
 		turl.addParameter("utmac", appId);
-		turl.addParameter("utmcc", getCookie());
+		turl.addParameter("utmcc", getUTMACookie());
 		if (screenWidth != -1 && screenHeight != -1) {
 			turl.addParameter("utmsr", screenWidth + "x" + screenHeight);	
 		}

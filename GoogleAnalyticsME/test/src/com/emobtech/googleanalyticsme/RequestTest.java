@@ -25,7 +25,7 @@ public class RequestTest extends TestCase {
 		p.setCurrentVisitTimestamp(333);
 		p.setVisitNumber(7);
 		//
-		assertEquals("__utma%3D12345.777.111.222.333.7;", p.getCookie());
+		assertEquals("__utma%3D12345.777.111.222.333.7;", p.getUTMACookie());
 	}
 
 	public void testTrackingURL() {
@@ -53,7 +53,7 @@ public class RequestTest extends TestCase {
 		TrackingURL turl = p.trackingURL();
 		//
 		assertEquals("UA-12345", turl.getParameter("utmac"));
-		assertEquals(p.getCookie(), turl.getParameter("utmcc"));
+		assertEquals(p.getUTMACookie(), turl.getParameter("utmcc"));
 		assertNull(turl.getParameter("utmsr"));
 		assertNull(turl.getParameter("utmsc"));
 		//

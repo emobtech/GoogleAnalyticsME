@@ -60,7 +60,7 @@ final class TrackingURL {
 		values = new Vector(15);
 		//
 		addParameter("utmwv", "1");
-		addParameter("utmn", random.nextInt() + "");
+		addParameter("utmn", String.valueOf(Math.abs(random.nextInt())));
 		addParameter("utmcs", System.getProperty("microedition.encoding"));
 		addParameter("utmul", System.getProperty("microedition.locale"));
 		addParameter("utmje", "1");

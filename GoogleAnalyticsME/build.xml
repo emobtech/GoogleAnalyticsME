@@ -82,7 +82,7 @@
 		<wtkpreverify classpathref="game.classpath" jarfile="${game.version.path.dist}/${game.version.jar}"/>
 	</target>
 
-	<target name="-run" depends="-classpath_javame, -compile, -lib_javame, -preverify_javame, -findbugs, -package"/>
+	<target name="-run" depends="-classpath_javame, -compile, -lib_javame, -preverify_javame, -findbugs, +javadoc, -package"/>
 	
 	<target name="+build_javame">
 		<antcall target="-run">
@@ -134,6 +134,5 @@
 	</target>
 	
 	<target name="+build_all" depends="+build_javame"/>
-	
-	<target name="+release" depends="+build_all, +javadoc"/>
+
 </project>

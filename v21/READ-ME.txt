@@ -1,0 +1,43 @@
+********************************************************************************
+*                      Google Analytics ME 2.1 - READ ME                       *
+********************************************************************************
+*                  http://kenai.com/projects/googleanalyticsme                 *
+********************************************************************************
+
+ DESCRIPTION:
+********************************************************************************
+
+This project is a compelling and well defined API for Java ME developers who 
+wish to integrate their apps into Google Analytics. With this API, developers 
+will be able to prepare their apps to send out useful data, about how users are
+interacting with them. Those data will be valuable to identify, e.g., audience 
+and improvement points.
+
+ MINIMUM REQUIREMENTS:
+********************************************************************************
++ Runtime Environment
+  - Java ME: MIDP 2.0 / CLDC 1.0
+
++ Development Environment
+  - Java SDK 1.6
+  - Java ME platform SDK 3.0, WTK 2.5.2 or any other compatible Java ME SDK
+  - Antenna
+  - JUnit 3
+
+ AVAILABLE IN THIS VERSION:
+********************************************************************************
+- Fixed issue that was not identifing properly unique visitors.
+- Improved session counter and visit duration calculation.
+- Assign a custom user agent throught the JAD property "GAME-Custom-UserAgent".
+
+ KNOWN BUGS IN THIS VERSION:
+********************************************************************************
+- None
+
+ REMARKS:
+********************************************************************************
+- Thanks Ramesh Sudini from SAAVN.com for your contribution in this release.
+
+ COMING NEXT VERSION: 2.2
+********************************************************************************
+- Let us know what you need.

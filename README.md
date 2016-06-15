@@ -1,68 +1,38 @@
-# Google Analytics ME ([[#Donate|Support us!]])
+# Google Analytics ME
 
-'''Google Analytics ME''' is a compelling and well defined API for Java ME developers who wish to integrate their apps into Google Analytics. With this API, developers will be able to prepare their apps to send out useful data, about how users are interacting with them. Those data will be valuable to identify, e.g., audience and improvement points.
+**Google Analytics ME** is a compelling and well defined API for Java ME developers who wish to integrate their apps into Google Analytics. With this API, developers will be able to prepare their apps to send out useful data, about how users are interacting with them. Those data will be valuable to identify, e.g., audience and improvement points.
 
-====<span id="tablecont">Table of Contents:</span>====
-#[[#Licensing|Licensing]]
-#[[#MinReqs|Minimum Requirements]]
-#[[#UpdateHistory|Update History]]
-#[[#SampleCodes|Sample Codes]]
-#[[#Donate|Donation]]
-#[[#SeeAlso|See Also]]
-#[[#References|References]]
-#[[#ExtLinks|External Links]]
+# Licensing
 
-= <span id="Licensing">Licensing</span> =
-Google Analytics ME is under two licenses: '''[http://en.wikipedia.org/wiki/GNU_General_Public_License GNU General Public License v2.0]''' regarding the source code and '''[http://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License GNU Lesser General Public License v3.0]''' for the binaries. It means that now you can develop proprietary applications with Google Analytics ME' if you merely link them to API's binaries.
+Google Analytics ME is under two licenses: **[GNU General Public License v2.0](http://en.wikipedia.org/wiki/GNU_General_Public_License)** regarding the source code and **[GNU Lesser General Public License v3.0](http://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License)** for the binaries. It means that now you can develop proprietary applications with Google Analytics ME' if you merely link them to API's binaries.
 
-[[#tablecont|(back to top)]]
+# Minimum Requirements
 
-= <span id="MinReqs">Minimum Requirements</span> =
+* Java Micro Edition (MIDP 2.0 / CLDC 1.0) or newer
+* Internet connection (e.g. GPRS, EDGE, 3G, wi-fi, etc)
+* Google Analytics account*
 
-*Java Micro Edition (MIDP 2.0 / CLDC 1.0) or newer
-*Internet connection (e.g. GPRS, EDGE, 3G, wi-fi, etc)
-*Google Analytics account*
+*By creating an account on Google Analytics, make sure you select '''"Web Site"''', when asked what you would like to track. "App" will not work for this API.
 
-<nowiki>*</nowiki>By creating an account on Google Analytics, make sure you select '''"Web Site"''', when asked what you would like to track. "App" will not work for this API.
+# Update History
 
-[[#tablecont|(back to top)]]
+Google Analytics ME is now at its fifth release (**2.1**). This last version consists of bug fixes and new features.
 
-= <span id="UpdateHistory">Update History</span> =
-Google Analytics ME is now at its fifth release ('''2.1'''). This last version consists of bug fixes and new features.
+Version | Date | Contents
+------- | ---- | --------
+2.1 | 06/07/2012 | 1. Fixed issue that was not identifing properly unique visitors. <br/> 2. Improved session counter and visit duration calculation. <br/> 3. Assign a custom user agent throught the JAD property "GAME-Custom-UserAgent".
+2.0 | 01/02/2012 | 1. Identification of unique and returning visitors. <br/> 2. Better visitor's features identification. <br/> 3. Small code refactoring. <br/> 4. Android support deprecated.
+1.2 | 03/11/2011 | 1. Android support.
+1.1 | 01/13/2011 | 1. A bug fix related to visitor identification.
+1.0 | 12/27/2010 | 1. Page View and Event tracking. <br/> 2. Synchronous and Asynchronous communication.
 
-{|- border="1"
-!Version
-!Date
-!Contents
-|-
-|<center>2.1</center>
-|<center>06/07/2012</center>
-|<ul><li>Fixed issue that was not identifing properly unique visitors.</li><li>Improved session counter and visit duration calculation.</li><li>Assign a custom user agent throught the JAD property "GAME-Custom-UserAgent".</li></ul>
-|-
-|<center>2.0</center>
-|<center>01/02/2012</center>
-|<ul><li>Identification of unique and returning visitors.</li><li>Better visitor's features identification.</li><li>Small code refactoring.</li><li>Android support deprecated.</li></ul>
-|-
-|<center>1.2</center>
-|<center>03/11/2011</center>
-|<ul><li>Android support</li></ul>
-|-
-|<center>1.1</center>
-|<center>01/13/2011</center>
-|<ul><li>A bug fix related to visitor identification.</li></ul>
-|-
-|<center>1.0</center>
-|<center>12/27/2010</center>
-|<ul><li>Page View and Event tracking</li><li>Synchronous and Asynchronous communication</li></ul>
-|}
+# Sample Codes
 
-[[#tablecont|(back to top)]]
-
-= <span id="SampleCodes">Sample Codes</span> =
 In order to help you to quick learn how to work with Google Analytics ME, here it goes some sample codes showing how to perform some common tasks.
 
-'''- Tracking how many times a MIDlet is started up:'''
-<pre name="java">
+* **Tracking how many times a MIDlet is started up:**
+
+```java
 public class MediaPlayerMIDlet extends MIDlet {
 
   public AppMIDlet() {
@@ -73,10 +43,11 @@ public class MediaPlayerMIDlet extends MIDlet {
   }
   ...
 }
-</pre>
+```
 
-'''- Tracking how many times a screen is displayed:'''
-<pre name="java">
+* **Tracking how many times a screen is displayed:**
+
+```java
 public class MediaPlayerScreen extends Form {
   ...
   public void commandAction(Command c, Displayable d) {
@@ -90,7 +61,7 @@ public class MediaPlayerScreen extends Form {
   }
   ...
 }
-</pre>
+```
 
 '''- Tracking how many times a function of a screen is performed:'''
 <pre name="java">

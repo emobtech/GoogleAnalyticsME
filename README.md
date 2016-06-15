@@ -128,5 +128,5 @@ In case of Google Analytics ME has brought good benefits for you and/or your com
 ## External Links
 
 * [Google Analytics](http://www.google.com/analytics)
-* [J2ME Group Blog](http://j2megroup.blogspot.com)
 * [eMob Tech](http://www.emobtech.com)
+* [J2ME Group Blog](http://j2megroup.blogspot.com)

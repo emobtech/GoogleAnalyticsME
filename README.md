@@ -12,7 +12,7 @@ Google Analytics ME is under two licenses: **[GNU General Public License v2.0](h
 * Internet connection (e.g. GPRS, EDGE, 3G, wi-fi, etc)
 * Google Analytics account*
 
-*By creating an account on Google Analytics, make sure you select '''"Web Site"''', when asked what you would like to track. "App" will not work for this API.
+*By creating an account on Google Analytics, make sure you select "**Web Site**", when asked what you would like to track. "App" will not work for this API.
 
 # Update History
 
@@ -63,8 +63,9 @@ public class MediaPlayerScreen extends Form {
 }
 ```
 
-'''- Tracking how many times a function of a screen is performed:'''
-<pre name="java">
+* **Tracking how many times a function of a screen is performed:**
+
+```java
 ...
 public void play() {
   Tracker tracker = Tracker.getInstance(midlet, "UA-1736743-0");
@@ -72,10 +73,11 @@ public void play() {
   ...
 }
 ...
-</pre>
+```
 
-'''- Tracking events synchronously:'''
-<pre name="java">
+* **Tracking events synchronously:**
+
+```java
 ...
 public void rewind() {
   Tracker tracker = Tracker.getInstance(midlet, "UA-1736743-0");
@@ -83,10 +85,11 @@ public void rewind() {
   ...
 }
 ...
-</pre>
+```
 
-'''- Explicitly *flushing all queued events:'''
-<pre name="java">
+* **Explicitly flushing all queued events:**
+
+```java
 public class MediaPlayerMIDlet extends MIDlet {
   ...
   public void destroyApp(boolean unconditional) {
@@ -94,35 +97,36 @@ public class MediaPlayerMIDlet extends MIDlet {
     tracker.flush(false);
   }
 }
-</pre>
+```
 
-'''*Make to sure to call this method (synchronously) before the app is destroyed. Otherwise, any queued requests will be lost.'''
+**Make to sure to call this method (synchronously) before the app is destroyed. Otherwise, any queued requests will be lost.**
 
-'''- Customize User Agent in JAD file:'''
-<pre name="java">
+* **Customize User Agent in JAD file:**
+
+```
 
 MicroEdition-Configuration: CLDC-1.0
 MicroEdition-Profile: MIDP-2.0
 ...
 GAME-Custom-UserAgent: NokiaN90-1/3.0545.5.1 Series60/2.8 Profile/MIDP-2.0 Configuration/CLDC-1.1
 ...
-</pre>
+```
 
-[[#tablecont|(back to top)]]
+## Donation
 
-= <span id="Donate">Donation</span> =
-In case of Google Analytics ME has brought good benefits for you and/or your company, and because of that you would like to thank us for all our hard work. Please, feel free to donate us any amount, via PayPal, by clicking '''[https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=ernandes%40gmail%2ecom&lc=US&item_name=Google%20Analytics%20ME&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest here]'''. It is easy and quick to do. In addition, this contribution will provide us more resources to keep up improving this API for you.
+In case of Google Analytics ME has brought good benefits for you and/or your company, and because of that you would like to thank us for all our hard work. Please, feel free to donate us any amount, via PayPal, by clicking **[here](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=ernandes%40gmail%2ecom&lc=US&item_name=Google%20Analytics%20ME&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest)**. It is easy and quick to do. In addition, this contribution will provide us more resources to keep up improving this API for you.
 
-[[#tablecont|(back to top)]]
+## See Also
 
-= <span id="SeeAlso">See Also</span> =
-* [http://code.google.com/mobile/analytics/docs/ Google Analytics for Mobile]
+* [Google Analytics for Mobile](http://code.google.com/mobile/analytics/docs/)
 
-= <span id="References">References</span> =
-* [http://code.google.com/mobile/analytics/docs/web/ Google Analytics for Mobile Websites]
-* [http://code.google.com/apis/analytics/docs/tracking/gaTrackingTroubleshooting.html Troubleshooting the Tracking Code]
+## References
 
-= <span id="ExtLinks">External Links</span> =
-* [http://www.google.com/analytics Google Analytics]
-* [http://j2megroup.blogspot.com J2ME Group Blog]
-* [http://www.emobtech.com eMob Tech]
+* [Google Analytics for Mobile Websites](http://code.google.com/mobile/analytics/docs/web/)
+* [Troubleshooting the Tracking Code](http://code.google.com/apis/analytics/docs/tracking/gaTrackingTroubleshooting.html)
+
+## External Links
+
+* [Google Analytics](http://www.google.com/analytics)
+* [J2ME Group Blog](http://j2megroup.blogspot.com)
+* [eMob Tech](http://www.emobtech.com)
